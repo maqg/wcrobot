@@ -13,7 +13,6 @@ from random import Random
 
 from core.err_code import err_desc_en, err_desc_ch
 from utils.timeUtil import get_current_time
-from conf.dbconfig import TB_HOST
 
 DEBIAN_VERSION_FILE = "/etc/debian_version"
 CENTOS_VERSION_FILE = "/etc/centos-release"
@@ -323,15 +322,6 @@ def isValidJson(string):
 	return True
 
 
-def get_host_addr(db, hostID):
-	cond = "WHERE ID='%s'" % hostID
-	host = db.fetchone(TB_HOST, cond=cond)
-	if (not host):
-		return (None, None)
-
-	return (host.get("H_IP"), host.get("H_HostKey"))
-
-
 def format_path_net(path):
 	flag = 0
 
@@ -367,7 +357,3 @@ def get_pid_by_process_name(name):
 		return None
 
 	return data.split()[0]
-
-if __name__ == "__main__":
-	mac = allocVmMac(getUuid(), "3")
-	print(mac)

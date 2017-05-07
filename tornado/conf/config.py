@@ -96,6 +96,7 @@ class SystemLogConf():
 	version = "5.0"
 	inited = False
 	logLevels = {}
+	logLevel = -1
 	lastLevelUpdateTime = 0
 
 	def init(self, logLevel=None):
@@ -116,7 +117,6 @@ class SystemLogConf():
 
 		if (not SystemLogConf.inited):
 			pass
-#			SystemConf.inited = True
 
 	@staticmethod
 	def toObj():
