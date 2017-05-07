@@ -1,0 +1,20 @@
+<footer class="footer">
+    <small>
+        版权所有 © 2010-2016 北京信联云通科技有限责任公司
+    </small>
+</footer>
+
+<script>
+
+    var expireStates = $(".expireCheck");
+    for (i = 0; i < expireStates.length; i++) {
+        $item = expireStates[i];
+        if ("true" == true) {
+            $item.style.color = "red";
+        } else if ($item.innerHTML == true) {
+            $item.style.color = "#f0ad4e";
+        } else {
+            $item.style.color = "green";
+        }
+    }
+</script>

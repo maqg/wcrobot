@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {% include 'head.html' %}
+</head>
+<body>
+
+{% include 'header.html' %}
+
+<div class="container">
+
+    <h2 style="text-align: left">仪表盘</h2>
+
+    <div id="errorPrompt">
+    </div>
+
+    <table id="configurationContent" class="table table-striped">
+    </table>
+    <br>
+
+    {% include 'footer.html' %}
+
+</div>
+
+
+<script>
+
+    function updateConfigTable(dataObj) {
+
+        bodyStr = "";
+
+        $configTable = $("#configurationContent");
+
+        bodyStr += "<tr><th>属性</th><th>内容</th></tr>";
+        bodyStr += "<tr><td>根目录</td><td>" + dataObj["baseDir"] + "</td></tr>";
+        bodyStr += "<tr><td>总容量</td><td>" + getFileSize(dataObj["capacity"] * 1024) + "</td></tr>";
+        bodyStr += "<tr><td>可用容量</td><td>" + getFileSize(dataObj["available"] * 1024) + "</td></tr>";
+        bodyStr += "<tr><td>使用率</td><td>" + dataObj["rate"] + "</td></tr>";
+        bodyStr += "<tr><td>账号数</td><td>" + dataObj["account"] + "</td></tr>";
+        bodyStr += "<tr><td>根模板镜像</td><td><a class='btn btn-info detail-button' href='/ui/roottemplate/'>" + dataObj["root"] + " 个</a></td></tr>";
+        bodyStr += "<tr><td>ISO镜像</td><td><a class='btn btn-info detail-button' href='/ui/isotemplate/'>" + dataObj["iso"] + " 个</a></td></tr>";
+        bodyStr += "<tr><td>数据盘镜像</td><td><a class='btn btn-info detail-button' href='/ui/datatemplate/'>" + dataObj["dataDisk"] + " 个</a></td></tr>";
+        bodyStr += "<tr><td>SnapShots</td><td><a class='btn btn-info detail-button' href='/ui/snapshot/'>" + dataObj["snapshot"] + " 个</a></td></tr>";
+        bodyStr += "<tr><td>文件</td><td><a class='btn btn-info detail-button' href='/ui/file/'>" + dataObj["file"] + " 个</a></td></tr>";
+
+        $configTable.html(bodyStr);
+    }
+
+    function updateConfiguration(keyword) {
+
+        json = {
+            "api": "octlink.backupstorage.v5.config.APIShowBsInfo",
+            "paras": {
+                "timeout": 0
+            },
+            "async": false
+        };
+
+        bodyStr = JSON.stringify(json);
+
+        httpPost("/api/", bodyStr, function (resJson) {
+
+            retData = parseResponse(resJson);
+            if (retData == null) {
+                return;
+            }
+
+            updateConfigTable(retData);
+        });
+    }
+
+    updateConfiguration();
+
+</script>
+
+</body>
+
+</html>

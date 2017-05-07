@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {% include 'head.html' %}
+</head>
+<body>
+
+{% include 'header.html' %}
+
+    <textarea title="" id="mediaType" hidden style="height: 1px">
+        {{ mediaType }}
+    </textarea>
+
+
+<div class="container">
+
+    <h2 style="text-align: left">ISO镜像列表</h2>
+
+    <div id="errorPrompt">
+    </div>
+
+    <div style="display: inline-block">
+        <label class="" style="width: 60px;float: left;line-height: 34px; margin-right: 10px">文件名：</label>
+        <input type="text" style="margin-right:10px; width: 200px; float: left" placeholder="请输入关键字" id="queryKeyword"
+               name="keyword" value="">
+        <label class="" style="width: 50px;float: left;line-height: 34px; margin-right: 0">账号：</label>
+        <select title="" name='type' class='form-control' style="margin-right:10px; width: 300px; float: left" id="queryAccountList">
+        </select>
+        <input id="moduleQueryButton" style="margin-right:10px; width: 80px; float: left" onclick="doQuery();"
+               type="button" value="刷新" class="btn btn-primary"/>
+    </div>
+
+    <table id="fileListContent" class="table table-striped">
+    </table>
+    <br>
+
+    <div class="btn btn-primary" style="float: right; margin-right: 15px" onclick="addImage();">添加</div>
+    <div class="btn btn-primary" style="float: right; margin-right: 15px" onclick="uploadImage();">本地上传</div>
+
+    {% include 'dataConfirmModal.html' %}
+
+    {% include 'footer.html' %}
+
+</div>
+
+
+<div class="modal fade" style="top: 20%" id="modalUploadFile" tabindex="-1" role="dialog"
+     aria-labelledby="modalUploadFileLabel" aria-hidden="true">
+    <div class="modal-dialog" style="width: 40%">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 id="modalUploadFileTitle" class="modal-title">
+                    添加文件
+                </h4>
+            </div>
+            <div style="margin-left: 5px; margin-right: 5px" id="modalUploadFileBody">
+
+                <form id="uploadIsoForm" method="POST" action="/files/upload/" enctype="multipart/form-data">
+
+                    <label for="name">镜像名称</label><span style="color: red">*</span>
+                    <input id="imageName" type="text" name="name" title=""/>
+
+                    <label for="name">账号ID</label><span style="color: red">*</span>
+                    <input id="accountId" type="text" name="accountId" title=""/>
+
+                    <label for="uuid">UUID</label>
+                    <input id="imageUuid" type="text" name="uuid" title=""/>
+
+                    <label for="platform">平台类型</label><span style="color: red">*</span>
+                    <input id="imagePlatform" type="text" name="platform" placeholder="Windows" value="Windows"
+                           title=""/>
+
+                    <label for="guestOs">客户操作系统</label><span style="color: red">*</span>
+                    <input id="imageGuestOs" type="text" name="guestOs" placeholder="Windows 7" value="Windows 7"
+                           title=""/>
+
+                    <label for="file1">ISO文件</label><span style="color: red">*</span>
+                    <input id="file1" type="file" name="file1" title=""/>
+
+                    <br>
+
+                    <input style="color: white; background-color: #2b669a" class="submit-row"
+                           onclick="prepareUploadParas();" type="submit">
+                </form>
+
+            </div>
+            <br>
+            <div class="modal-footer">
+                <button class="btn btn-default" style="font-size: 120%" data-dismiss="modal">取消</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" style="top: 20%" id="modalAddFile" tabindex="-1" role="dialog"
+     aria-labelledby="modalAddFileLabel" aria-hidden="true">
+    <div class="modal-dialog" style="width: 40%">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 id="modalAddFileTitle" class="modal-title">
+                    添加文件
+                </h4>
+            </div>
+            <div style="margin-left: 5px; margin-right: 5px" id="modalAddFileBody">
+
+                <label for="fileName">镜像名</label><span style="color: red">*</span>
+                <input id="fileName1" type="text" name="name" title=""/>
+
+                <label for="accountId">账号ID</label><span style="color: red">*</span>
+                <input id="accountId1" type="text" name="accountId" title=""/>
+
+                <label for="uuid">UUID</label>
+                <input id="imageUuid1" type="text" name="uuid" title=""/>
+
+                <label for="url">来源URL</label><span style="color: red">*</span>
+                <input type="text" name="url" id="url"/>
+
+                <label for="platform">平台类型</label><span style="color: red">*</span>
+                <input id="imagePlatform1" type="text" name="platform" placeholder="Windows" value="Windows" title=""/>
+
+                <label for="guestOs">客户操作系统</label><span style="color: red">*</span>
+                <input id="imageGuestOs1" type="text" name="guestOs" placeholder="Windows 7" value="Windows 7" title=""/>
+
+            </div>
+            <br>
+            <div class="modal-footer">
+                <button id="modalAddFileCallback" class="btn btn-primary" style="font-size: 120%" data-dismiss="modal">
+                    确定
+                </button>
+                <button class="btn btn-default" style="font-size: 120%" data-dismiss="modal">取消</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    function getKeyword() {
+        return $("#queryKeyword").val();
+    }
+
+    function getQueryAccount() {
+        return getSelectedOption("#queryAccountList");
+    }
+
+    function doQuery() {
+        var keyword = getKeyword();
+        var account = getQueryAccount();
+
+        updateFileList(keyword, account);
+    }
+
+    function updateAccountList() {
+
+        json = {
+            "api": "octlink.backupstorage.v5.image.APIShowAccountList",
+            "paras": {
+                "timeout": 0,
+                "mediaType": "ISO"
+            },
+            "async": false
+        };
+
+        bodyStr = JSON.stringify(json);
+
+        httpPost("/api/", bodyStr, function (resJson) {
+
+            retData = parseResponse(resJson);
+            if (retData == null) {
+                return;
+            }
+
+            updateAccountTable(retData);
+        });
+    }
+
+    function updateFileList(keyword, account) {
+
+        json = {
+            "api": "octlink.backupstorage.v5.image.APIShowAllImage",
+            "paras": {
+                "timeout": 0,
+                "mediaType": mediaType,
+                "keyword": keyword,
+                "accountId": account
+            },
+            "async": false
+        };
+
+        bodyStr = JSON.stringify(json);
+
+        httpPost("/api/", bodyStr, function (resJson) {
+
+            retData = parseResponse(resJson);
+            if (retData == null) {
+                return;
+            }
+
+            updateFileTable(retData);
+        });
+    }
+
+    function prepareUploadParas() {
+        $form = $("#uploadIsoForm");
+
+        var query = $form.attr("action");
+
+        query += "?" + "name=" + $("#imageName").val() + "&";
+        query += "uuid=" + $("#imageUuid").val() + "&";
+        query += "platform=" + $("#imagePlatform").val() + "&";
+        query += "accountId=" + $("#accountId").val() + "&";
+        query += "mediaType=ISO&";
+        query += "format=iso&";
+        query += "guestOs=" + $("#imageGuestOs").val();
+
+        $form.attr("action", query);
+    }
+
+    function createHeader() {
+
+        bodyStr = "<tr><th>镜像名</th>";
+        bodyStr += "<th>Uuid</th>";
+        bodyStr += "<th>格式</th>";
+        bodyStr += "<th>操作系统</th>";
+        bodyStr += "<th>平台</th>";
+        bodyStr += "<th>物理大小</th>";
+        bodyStr += "<th>虚拟大小</th>";
+        bodyStr += "<th>创建时间</th>";
+        bodyStr += "<th>操作</th></tr>";
+
+        return $(bodyStr);
+    }
+
+    function raiseDetail(image) {
+
+        $detailBody = $("#modalDetailBody");
+
+        if ($detailBody != null) {
+
+            var bodyStr = "";
+
+            fileObj = image["files"][0];
+
+            bodyStr += "<table class=\"table table-striped table-hover\">";
+            bodyStr += "<tr><th>属性</th><th>内容</th></tr>";
+            bodyStr += "<tr><td>UUID</td><td>" + image["id"] + "</td></tr>";
+            bodyStr += "<tr><td>镜像名称</td><td>" + image["imageName"] + "</td></tr>";
+            bodyStr += "<tr><td>状态</td><td>" + image["status"] + "</td></tr>";
+            bodyStr += "<tr><td>文件名</td><td>" + fileObj["fileName"] + "</td></tr>";
+            bodyStr += "<tr><td>路径</td><td>" + fileObj["filePath"] + "</td></tr>";
+            bodyStr += "<tr><td>URL</td><td>" + fileObj["url"] + "</td></tr>";
+            bodyStr += "<tr><td>物理大小</td><td>" + getFileSize(image["diskSize"]) + "</td></tr>";
+            bodyStr += "<tr><td>虚拟大小</td><td>" + getFileSize(image["virtualSize"]) + "</td></tr>";
+            bodyStr += "<tr><td>格式</td><td>" + image["format"] + "</td></tr>";
+            bodyStr += "<tr><td>系统</td><td>" + image["guestOsType"] + "</td></tr>";
+            bodyStr += "<tr><td>平台</td><td>" + image["platform"] + "</td></tr>";
+            bodyStr += "<tr><td>创建时间</td><td>" + fileObj["createTime"] + "</td></tr>";
+            bodyStr += "<tr><td>媒体类型</td><td>" + image["mediaType"] + "</td></tr>";
+
+
+            $detailBody.html(bodyStr);
+
+            // to modify lable
+            $lable = $("#modalDetailTitle");
+            if ($lable != null) {
+                $lable.html("镜像详情-" + image["imageName"]);
+            }
+
+            $("#modalDetail").modal("show");
+        } else {
+            updateErrorPrompt("error", "获取详细页面错误！");
+        }
+    }
+
+    function printImage(dataObj) {
+
+        bodyStr = "<tr><td>" + dataObj["imageName"] + "</td>";
+        bodyStr += "<td>" + dataObj["id"] + "</td>";
+        bodyStr += "<td>" + dataObj["format"] + "</td>";
+        bodyStr += "<td>" + dataObj["guestOsType"] + "</td>";
+        bodyStr += "<td>" + dataObj["platform"] + "</td>";
+        bodyStr += "<td>" + getFileSize(dataObj["diskSize"]) + "</td>";
+        bodyStr += "<td>" + getFileSize(dataObj["virtualSize"]) + "</td>";
+        bodyStr += "<td>" + dataObj["createTime"] + "</td>";
+        bodyStr += "<td><button class=\"btn btn-success detail-button\" onclick=\"raiseDetail(dataObj);\" style=\"margin-right: 10px\" >详细</button>";
+        bodyStr += "<button class=\"btn btn-warning detail-button\" onclick=\"funcNotFound('" + dataObj["id"] + "');\" style=\"margin-right: 10px\">编辑</button>";
+        bodyStr += "<button class=\"btn btn-info detail-button\" onclick=\"downloadImage('" + dataObj["id"] + "');\" style=\"margin-right: 10px\">下载</button>";
+        bodyStr += "<button class=\"btn btn-primary detail-button\" onclick=\"funcNotFound('" + dataObj["id"] + "');\" style=\"margin-right: 10px\">导出</button>";
+        bodyStr += "<button class=\"btn btn-danger detail-button\" onclick=\"removeImage('" + dataObj["id"] + "');\" style=\"margin-right: 10px\" >删除</button></td></tr>";
+
+        $tr = $(bodyStr);
+
+        $tr.dblclick(function () {
+            raiseDetail(dataObj);
+        });
+
+        return $tr;
+    }
+
+    var g_images = {};
+
+    function updateFileTable(fileList) {
+
+        $fileTable = $("#fileListContent");
+
+        $fileTable.html("");
+        $fileTable.append(createHeader());
+
+        for (var i = 0; i < fileList.length; i++) {
+            dataObj = fileList[i];
+            $tr = printImage(dataObj);
+            g_images[dataObj["id"]] = dataObj;
+            $fileTable.append($tr);
+        }
+    }
+
+    function updateAccountTable(fileList) {
+
+        $fileTable = $("#queryAccountList");
+
+        $fileTable.html("");
+
+        bodyStr = "";
+        for (var i = 0; i < fileList.length; i++) {
+            bodyStr += "<option>" + fileList[i] + "</option>";
+        }
+
+        $fileTable.html(bodyStr);
+    }
+
+    function raiseRemoveModal(imageId, prompt) {
+
+        $("#modalConfirmPrompt").html(prompt);
+
+        $("#modalConfirmCallback").click(function () {
+            json = {
+                "api": "octlink.backupstorage.v5.image.APIRemoveImage",
+                "paras": {
+                    "timeout": 0,
+                    "id": imageId,
+                    "mediaType": mediaType
+                },
+                "async": false
+            };
+
+            bodyStr = JSON.stringify(json);
+
+            httpPost("/api/", bodyStr, function (resJson) {
+                parseResponse(resJson);
+                $("#modalConfirm").modal("hide");
+                updateFileList(getKeyword());
+            });
+        });
+
+        $("#modalConfirm").modal("show");
+    }
+
+    function removeImage(fileName) {
+        raiseRemoveModal(fileName, "您确认删除此镜像？");
+    }
+
+    function raiseUploadModal() {
+        $("#modalUploadFile").modal("show");
+    }
+
+    function raiseAddModal() {
+
+        $("#modalAddFileCallback").click(function () {
+
+            fileName = $("#fileName1").val();
+            url = $("#url").val();
+            imageId = $("#imageUuid1").val();
+            platform = $("#imagePlatform1").val();
+            guestOs = $("#imageGuestOs1").val();
+            accountId = $("#accountId1").val();
+
+            json = {
+                "api": "octlink.backupstorage.v5.image.APIAddImage",
+                "paras": {
+                    "timeout": 0,
+                    "name": fileName,
+                    "url1": url,
+                    "id": imageId,
+                    "platform": platform,
+                    "guestOsType": guestOs,
+                    "format": "iso",
+                    "mediaType": "ISO",
+                    "accountId": accountId
+                },
+                "async": false
+            };
+
+            bodyStr = JSON.stringify(json);
+
+            httpPost("/api/", bodyStr, function (resJson) {
+                $("#modalAddFile").modal("hide");
+                updateFileList(getKeyword());
+            });
+        });
+
+        $("#modalAddFile").modal("show");
+    }
+
+    function addImage() {
+        raiseAddModal();
+    }
+
+    function uploadImage() {
+        raiseUploadModal();
+    }
+
+    function downloadImage(imageId) {
+        image = g_images[imageId];
+        if (image != null) {
+            fileList = image["files"];
+
+            for (var i = 0; i < fileList.length; i++) {
+                file = fileList[i];
+                window.open(file["downloadUrl"], "_target");
+            }
+        }
+    }
+
+    var mediaType = $("#mediaType").val().split("\n")[0];
+
+    updateAccountList();
+
+    doQuery();
+
+</script>
+
+</body>
+
+</html>

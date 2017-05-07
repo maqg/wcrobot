@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {% include 'head.html' %}
+</head>
+<body>
+
+{% include 'header.html' %}
+
+<div class="container">
+
+    <h2 style="text-align: left">配置信息</h2>
+
+    <div id="errorPrompt">
+    </div>
+
+    <table id="configurationContent" class="table table-striped">
+    </table>
+    <br>
+
+    {% include 'footer.html' %}
+
+</div>
+
+
+<script>
+
+    function updateConfigTable(dataObj) {
+
+        bodyStr = "";
+
+        $configTable = $("#configurationContent");
+
+        bodyStr += "<tr><th>属性</th><th>内容</th></tr>";
+        bodyStr += "<tr><td>版本</td><td>" + dataObj["version"] + "</td></tr>";
+        bodyStr += "<tr><td>基本路径</td><td>" + dataObj["url"] + "</td></tr>";
+        bodyStr += "<tr><td>暂存路径（文件上传）</td><td>" + dataObj["tempPath"] + "</td></tr>";
+        bodyStr += "<tr><td>rsync路径</td><td>" + dataObj["rsyncPath"] + "</td></tr>";
+        bodyStr += "<tr><td>文件路径</td><td>" + dataObj["filesPath"] + "</td></tr>";
+        bodyStr += "<tr><td>ISO路径</td><td>" + dataObj["isosPath"] + "</td></tr>";
+        bodyStr += "<tr><td>根镜像路径</td><td>" + dataObj["rootVolumeTemplatesPath"] + "</td></tr>";
+        bodyStr += "<tr><td>数据盘路径</td><td>" + dataObj["dataVolumeTemplatesPath"] + "</td></tr>";
+        bodyStr += "<tr><td>快照路径</td><td>" + dataObj["snapshotsPath"] + "</td></tr>";
+
+        $configTable.html(bodyStr);
+    }
+
+    function updateConfiguration(keyword) {
+
+        json = {
+            "api": "octlink.backupstorage.v5.config.APIShowConfig",
+            "paras": {
+                "timeout": 0
+            },
+            "async": false
+        };
+
+        bodyStr = JSON.stringify(json);
+
+        httpPost("/api/", bodyStr, function (resJson) {
+
+            retData = parseResponse(resJson);
+            if (retData == null) {
+                return;
+            }
+
+            updateConfigTable(retData);
+        });
+    }
+
+    updateConfiguration();
+
+</script>
+
+</body>
+
+</html>

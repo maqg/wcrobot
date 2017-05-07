@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {% include 'head.html' %}
+</head>
+<body>
+
+{% include 'header.html' %}
+
+<div class="container">
+
+     <h2 style="text-align: left">文件列表</h2>
+
+    <div id="errorPrompt">
+    </div>
+
+    <div style="display: inline-block">
+        <label class="" style="width: 90px;float: left;line-height: 34px; margin-right: 10px">文件名：</label>
+        <input type="text" style="margin-right:10px; width: 200px; float: left" placeholder="请输入关键字" id="queryKeyword"
+               name="keyword" value="">
+        <input id="moduleQueryButton" style="margin-right:10px; width: 80px; float: left" onclick="doQuery();" type="button" value="刷新" class="btn btn-primary"/>
+    </div>
+
+    <table id="fileListContent" class="table table-striped">
+    </table>
+    <br>
+
+    <div class="btn btn-primary" style="float: right; margin-right: 15px" onclick="addFile();">添加文件</div>
+    <!--div class="btn btn-primary" style="float: right; margin-right: 15px" onclick="addFile();">本地上传</div-->
+
+    {% include 'dataConfirmModal.html' %}
+
+    {% include 'footer.html' %}
+
+</div>
+
+<div class="modal fade" style="top: 20%" id="modalAddFile" tabindex="-1" role="dialog" aria-labelledby="modalAddFileLabel" aria-hidden="true">
+    <div class="modal-dialog" style="width: 40%">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 id="modalAddFileTitle" class="modal-title">
+                    添加文件
+                </h4>
+            </div>
+            <div style="margin-left: 5px; margin-right: 5px" id="modalAddFileBody">
+
+                <label for="fileName">文件名</label><span style="color: red">*</span>
+                <input id="fileName" type="text" name="name" title=""/>
+
+                <label for="url">来源URL</label><span style="color: red">*</span>
+                <input type="text" name="url" id="url"/>
+
+                <label for="username">用户名（如果有）</label>
+                <input type="text" name="username" id="username" title=""/>
+
+                <label for="password">密码（如果有）</label>
+                <input type="text" name="passwod" id="password" title=""/>
+
+            </div><br>
+            <div class="modal-footer">
+                <button id="modalAddFileCallback" class="btn btn-primary" style="font-size: 120%" data-dismiss="modal">确定</button>
+                <button class="btn btn-default" style="font-size: 120%" data-dismiss="modal">取消</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    function getKeyword() {
+        return $("#queryKeyword").val();
+    }
+
+    function doQuery() {
+        var keyword = getKeyword();
+        updateFileList(keyword);
+    }
+
+    function updateFileList(keyword) {
+
+        json = {
+            "api": "octlink.backupstorage.v5.file.APIShowAllFile",
+            "paras":  {
+                "timeout": 0,
+                "keyword": keyword
+            },
+            "async": false
+        };
+
+        bodyStr = JSON.stringify(json);
+
+        httpPost("/api/", bodyStr, function(resJson) {
+
+            retData = parseResponse(resJson);
+            if (retData == null) {
+                return;
+            }
+
+            updateFileTable(retData);
+        });
+    }
+
+    function createHeader() {
+
+        bodyStr = "<tr><th>文件名称</th>";
+        bodyStr += "<th>大小</th>";
+        bodyStr += "<th>修改时间</th>";
+        bodyStr += "<th>文件路径</th>";
+        bodyStr += "<th>操作</th></tr>";
+
+        return $(bodyStr);
+    }
+
+
+    function raiseDetail(dataObj) {
+
+        $detailBody = $("#modalDetailBody");
+
+        if ($detailBody != null) {
+
+            var bodyStr = "";
+
+            bodyStr += "<table class=\"table table-striped table-hover\">";
+            bodyStr += "<tr><th>属性</th><th>内容</th></tr>";
+            bodyStr += "<tr><td>文件名</td><td>" + dataObj["fileName"] + "</td></tr>";
+            bodyStr += "<tr><td>路径</td><td>" + dataObj["filePath"] + "</td></tr>";
+            bodyStr += "<tr><td>大小</td><td>" + getFileSize(dataObj["diskSize"]) + "</td></tr>";
+            bodyStr += "<tr><td>创建时间</td><td>" + dataObj["createTime"] + "</td></tr>";
+
+            $detailBody.html(bodyStr);
+
+            // to modify lable
+            $lable = $("#modalDetailTitle");
+            if ($lable != null) {
+                $lable.html("文件详情-" + dataObj["imageName"]);
+            }
+
+            $("#modalDetail").modal("show");
+        } else {
+            updateErrorPrompt("error", "获取详细页面错误！");
+        }
+    }
+
+    function printFile(dataObj) {
+
+        bodyStr = "<tr><td>" + dataObj["fileName"] + "</td>";
+        bodyStr += "<td>" + getFileSize(dataObj["diskSize"]) + "</td>";
+        bodyStr += "<td>" + dataObj["createTime"] + "</td>";
+        bodyStr += "<td>" + dataObj["filePath"] + "</td>";
+        bodyStr += "<td><button class=\"btn btn-danger detail-button\" onclick=\"removeFile('" + dataObj["fileName"] + "');\" style=\"margin-right: 10px\" >删除</button>";
+        bodyStr += "<button class=\"btn btn-info detail-button\" onclick=\"downloadFile('" + dataObj["fileName"] + "');\" style=\"margin-right: 10px\">下载</button></td></tr>";
+
+        $tr = $(bodyStr);
+
+        $tr.dblclick(function () {
+            raiseDetail(dataObj);
+        });
+
+        return $tr;
+    }
+
+    function updateFileTable(fileList) {
+
+        $fileTable = $("#fileListContent");
+
+        $fileTable.html("");
+        $fileTable.append(createHeader());
+
+        for (var i = 0; i < fileList.length; i++) {
+            dataObj = fileList[i];
+            $tr = printFile(dataObj);
+            $fileTable.append($tr);
+        }
+    }
+
+    function raiseRemoveModal(fileName, prompt) {
+
+        $("#modalConfirmPrompt").html(prompt);
+
+        $("#modalConfirmCallback").click(function () {
+            json = {
+                "api": "octlink.backupstorage.v5.file.APIRemoveFile",
+                "paras": {
+                    "timeout": 0,
+                    "fileName": fileName
+                },
+                "async": false
+            };
+
+            bodyStr = JSON.stringify(json);
+
+            httpPost("/api/", bodyStr, function (resJson) {
+                parseResponse(resJson);
+                $("#modalConfirm").modal("hide");
+                updateFileList(getKeyword());
+            });
+        });
+
+        $("#modalConfirm").modal("show");
+    }
+
+    function removeFile(fileName) {
+        raiseRemoveModal(fileName, "您确认删除此文件？", removeFile);
+    }
+
+    function downloadFile(fileName) {
+
+        json = {
+            "api": "octlink.backupstorage.v5.file.APIDownloadFile",
+            "paras": {
+                "timeout": 0,
+                "fileName": fileName
+            },
+            "async": false
+        };
+
+        bodyStr = JSON.stringify(json);
+
+        httpPost("/api/", bodyStr, function (resJson) {
+            retData = parseResponse(resJson);
+            console.log(retData);
+            window.open(retData["downloadUrl"]);
+        });
+    }
+
+    function getAddFileBody() {
+        bodyStr = "";
+
+        bodyStr += "<label for='name'>名称</label><span style='color: red'>*</span>";
+        bodyStr += "<input style='width: 80%' type=\"text\" name=\"name\" title=\"\"/>";
+
+        return bodyStr;
+    }
+
+    function raiseAddModal() {
+
+        $("#modalAddFileCallback").click(function () {
+
+            fileName = $("#fileName").val();
+            url = $("#url").val();
+            username = $("#username").val();
+            password = $("#password").val();
+
+            json = {
+                "api": "octlink.backupstorage.v5.file.APIAddFile",
+                "paras": {
+                    "timeout": 0,
+                    "fileName": fileName,
+                    "url": url,
+                    "username": username,
+                    "password": password
+                },
+                "async": false
+            };
+
+            bodyStr = JSON.stringify(json);
+
+            httpPost("/api/", bodyStr, function (resJson) {
+                $("#modalAddFile").modal("hide");
+                updateFileList(getKeyword());
+            });
+        });
+
+        $("#modalAddFile").modal("show");
+    }
+
+    function addFile() {
+        raiseAddModal();
+    }
+
+    updateFileList(getKeyword());
+
+</script>
+
+</body>
+
+</html>

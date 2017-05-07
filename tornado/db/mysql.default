@@ -1,0 +1,2 @@
+INSERT INTO tb_account (ID,U_CreateTime,U_Type,U_Name,U_QuotaId,U_UKey,U_Password,U_Description) VALUES('c9b7c22a0ae911e7af10525400659eb7',UNIX_TIMESTAMP()*1000,7,'admin','00000000000000000000000000000000','','292f137f691469948acd0e72b141e373','');
+INSERT INTO tb_misc(M_VALUE, M_NAME, M_TYPE) VALUES("RVM-V5", "hostname", "common");

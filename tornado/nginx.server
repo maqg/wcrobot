@@ -1,0 +1,26 @@
+
+upstream tornado_servers {
+	server 127.0.0.1:9010;
+}
+
+server {  
+
+	listen 5443;
+	server_name serverV5; 
+
+	#ssl on;
+
+	ssl_certificate /etc/nginx/server.crt;
+	ssl_certificate_key /etc/nginx/server.key;
+
+	proxy_set_header Host $host;
+
+	location / {
+		proxy_pass_header Server;
+		proxy_set_header Host $http_host;
+		proxy_redirect off;
+		proxy_set_header X-Real-IP $remote_addr;
+		proxy_set_header X-Scheme $scheme;
+		proxy_pass http://tornado_servers;
+	}
+}
