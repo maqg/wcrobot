@@ -147,9 +147,18 @@ def tryToDump(string):
 def getStrTime(milisecs):
 	return time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(int(milisecs) / 1000))
 
+
 def isSystemWindows():
 	import platform
 	if (platform.system() == "Windows"):
+		return True
+	else:
+		return False
+
+
+def isSystemMac():
+	import platform
+	if (platform.system() == "Darwin"):
 		return True
 	else:
 		return False

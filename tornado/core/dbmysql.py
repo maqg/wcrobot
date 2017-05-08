@@ -6,7 +6,7 @@ import pymysql as mysql
 from conf.dbconfig import DB_USER, DB_PASSWORD, DB_NAME, DB_SERVER, get_sock_file
 from core.log import DEBUG
 from core.membank import memcache
-from utils.commonUtil import isSystemWindows
+from utils.commonUtil import isSystemWindows, isSystemMac
 
 membody = memcache.get_mem()
 tablelist = membody.get('tablelist', {})
@@ -31,7 +31,7 @@ class mysqldb():
     def connect(self, dbname):
         conn = self.connlist.get(dbname, None)
         if conn == None:
-            if (isSystemWindows()):
+            if (isSystemWindows() or isSystemMac()):
                 conn = mysql.connect(user=DB_USER,
                                  passwd=DB_PASSWORD,
                                  host=DB_SERVER,

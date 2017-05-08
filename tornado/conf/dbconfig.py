@@ -10,7 +10,7 @@ DB_NAME = "dbrobot"
 UNIXSOCKET_DEBIAN = "/var/run/mysqld/mysqld.sock"
 UNIXSOCKET_REDCENT = "/var/lib/mysql/mysql.sock"
 
-DB_SERVER = "localhost"
+DB_SERVER = "127.0.0.1"
 
 TB_ACCOUNT = "tb_account"
 TB_MISC = "tb_misc"

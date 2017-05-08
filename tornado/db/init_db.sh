@@ -2,11 +2,6 @@
 
 . ./global.sh
 
-if [ -d /var/lib/mysql/$DB_NAME ]; then
-	echo "$DB_NAME database exist, backup it ... ..."
-	./dbbackup.sh
-fi
-
 create_db ()
 {
 	DBNAME=$1
