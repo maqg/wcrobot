@@ -145,7 +145,7 @@ class WXBot:
 		:return: 转换后的Unicode字符串
 		"""
 		if isinstance(string, str):
-			return string.decode(encoding)
+			return string
 		elif isinstance(string, str):
 			return string
 		else:
@@ -167,7 +167,8 @@ class WXBot:
 		r.encoding = 'utf-8'
 		if self.DEBUG:
 			with open(os.path.join(self.temp_pwd, 'contacts.json'), 'w') as f:
-				f.write(r.text.encode('utf-8'))
+#				f.write(r.text.encode('utf-8'))
+				f.write(r.text)
 		dic = json.loads(r.text)
 		self.member_list = dic['MemberList']
 
@@ -569,14 +570,14 @@ class WXBot:
 		elif mtype == 3:
 			msg_content['type'] = 3
 			msg_content['data'] = self.get_msg_img_url(msg_id)
-			msg_content['img'] = self.session.get(msg_content['data']).content.encode('hex')
+			msg_content['img'] = self.session.get(msg_content['data']).content
 			if self.DEBUG:
 				image = self.get_msg_img(msg_id)
 				print(('    %s[Image] %s' % (msg_prefix, image)))
 		elif mtype == 34:
 			msg_content['type'] = 4
 			msg_content['data'] = self.get_voice_url(msg_id)
-			msg_content['voice'] = self.session.get(msg_content['data']).content.encode('hex')
+			msg_content['voice'] = self.session.get(msg_content['data']).content#.encode('hex')
 			if self.DEBUG:
 				voice = self.get_voice(msg_id)
 				print(('    %s[Voice] %s' % (msg_prefix, voice)))
@@ -1187,10 +1188,13 @@ class WXBot:
 				self.status = 'loginout'
 				return
 			self.status_notify()
+			print('[INFO] Start to get contacts .')
 			if self.get_contact():
 				print(('[INFO] Get %d contacts' % len(self.contact_list)))
 				print('[INFO] Start to process messages .')
+			print('[INFO] Start to get contacts 1.')
 			self.proc_msg()
+			print("fff 2")
 			self.status = 'loginout'
 		except Exception as e:
 			print(('[ERROR] Web WeChat run failed --> %s' % (e)))

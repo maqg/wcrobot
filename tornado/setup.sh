@@ -6,12 +6,11 @@ LANG=C
 SYSTEM_PACKAGES="python3-pip::yes \
 		python3::yes \
 		nginx:1.6.3:yes \
-		python3-tornadostreamform \
-		openssh-server::yes \
+		pypng::yes \
 		python3-tornado:3.0:yes \
-		ntpdate::yes \
-		rsync \
-		zip::yes"
+		requests::yes \
+		pyqrcode::yes \
+		Pillow::yes"
 
 
 install_source_debian7()
