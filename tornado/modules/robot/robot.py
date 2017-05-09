@@ -8,8 +8,12 @@ from models.Robot import *
 
 AUTHKEY_TIMEOUT = 24 * 30 * 60
 
-def get_robotlist(db):
+def get_robotlist(db, arg):
+
 	robot_list = []
+
+	cond = "WHERE 1=1 "
+	cond += "AND R_AccountId='%s' " % arg["paras"]["accountId"]
 
 	ret = db.select(TB_ROBOT, cond="")
 	if ret == -1:
@@ -30,6 +34,7 @@ def get_robotlist(db):
 
 
 def get_allrobot(db, arg):
+
 	listObj = {
 		"total": 0,
 		"robots": [],
@@ -39,6 +44,8 @@ def get_allrobot(db, arg):
 	limit = arg["paras"].get("limit") or 100
 
 	cond = "WHERE 1=1 "
+	cond += "AND R_AccountId='%s' " % arg["paras"]["accountId"]
+
 	ret = db.select(TB_ROBOT, cond=cond, limit=int(limit), offset=int(start))
 	if ret == -1:
 		ERROR("get robot list error")
@@ -51,7 +58,7 @@ def get_allrobot(db, arg):
 
 		listObj["robots"].append(robot.toObj())
 
-	listObj["total"] = getRobotCount(db)
+	listObj["total"] = getRobotCount(db, cond=cond)
 
 	return (OCT_SUCCESS, listObj)
 
@@ -66,7 +73,7 @@ def get_robot(db, robotId):
 	return (OCT_SUCCESS, robot.toObj())
 
 
-def add_robot(db, arg):
+def add_robot(db, env, arg):
 
 	paras = arg["paras"]
 	robotName = paras["name"]
@@ -81,11 +88,14 @@ def add_robot(db, arg):
 	robot.name = robotName
 	robot.phone = paras.get("phoneNumber") or ""
 	robot.uid = paras.get("uid") or ""
+	robot.accountId = paras.get("accountId")
 
 	return robot.add()
 
 
-def delete_robot(db, robotId):
+def delete_robot(db, arg):
+
+	robotId = arg["paras"]["id"]
 	robot = getRobot(db, robotId)
 	if (not robot):
 		ERROR("account %s not exist" % (robotId))

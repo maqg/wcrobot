@@ -1,4 +1,0 @@
-apt-get install python3
-apt-get install python3-pip
-pip-3.2 install tornado==4.3
-easy_install3 pymysql3

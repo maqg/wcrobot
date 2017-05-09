@@ -4,6 +4,7 @@
 from conf.dbconfig import TB_ROBOT
 from core.err_code import DB_ERR, OCT_SUCCESS, NOT_ENOUGH_PARAS
 from core.log import DEBUG, ERROR, WARNING
+from models.Common import DEFAULT_ACCOUNT_ID
 from utils.commonUtil import getUuid
 from utils.timeUtil import get_current_time, howLongAgo, getStrTime
 
@@ -61,12 +62,13 @@ class WCRobot:
 		self.myId = uid
 		self.name = name
 		self.uid = ""
+		self.accountId = DEFAULT_ACCOUNT_ID
+
 		self.dbObj = dbObj
 
 		self.role = 0
-		self.phone = ""
-		self.state = 1
-		self.stateCN = ""
+		self.state = ROBOT_STATE_OFFLINE
+		self.stateCN = robotState_d2s(self.state)
 
 		self.lastLogin = 0
 		self.lastSync = 0
@@ -93,7 +95,6 @@ class WCRobot:
 
 		self.myId = self.dbObj["ID"]
 		self.name = self.dbObj["R_Name"]
-		self.phone = self.dbObj["R_PhoneNumber"]
 		self.state = self.dbObj["R_State"]
 		self.stateCN = robotState_d2s(self.state)
 		self.lastLogin = self.dbObj["R_LastLogin"]
@@ -117,7 +118,7 @@ class WCRobot:
 	def update(self):
 
 		robotObj = {
-			"R_PhoneNumber": self.phone,
+			"R_Name": self.name,
 			"R_LastSync": get_current_time(),
 		}
 
@@ -137,8 +138,8 @@ class WCRobot:
 		robotObj = {
 			"ID": getUuid(),
 			"R_UId": self.uid,
+			"R_AccountId": self.accountId,
 			"R_Name": self.name,
-			"R_PhoneNumber": self.phone,
 			"R_CreateTime": get_current_time(),
 			"R_LastSync": get_current_time(),
 		}
@@ -167,10 +168,9 @@ class WCRobot:
 		return 0
 
 	def toObj(self):
-		account = {
+		obj = {
 			"id": self.myId,
 			"name": self.name,
-			"phone": self.phone,
 			"state": self.state,
 			"lastLogin": howLongAgo(self.lastLogin),
 			"lastSync": getStrTime(self.lastSync),
@@ -178,7 +178,7 @@ class WCRobot:
 			"stateCN": self.stateCN
 		}
 
-		return account
+		return obj
 
 	def toObjBrief(self):
 		return {

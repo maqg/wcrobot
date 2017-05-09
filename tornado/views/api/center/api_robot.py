@@ -22,11 +22,6 @@ funcList = {
 				"type": PARAM_TYPE_STRING,
 				"descCN": "微信ID",
 				"default": ""
-			},
-			"phoneNumber": {
-				"type": PARAM_TYPE_STRING,
-				"descCN": "电话号码",
-				"default": ""
 			}
 		}
 	},
@@ -85,8 +80,8 @@ funcList = {
 	},
 
 	"APIShowRobotList": {
-		"name": "获取账号列表",
-		"roles": [ROLE_SUPERADMIN],
+		"name": "获取机器人列表",
+		"roles": [ROLE_SUPERADMIN, ROLE_ADMIN],
 		"serviceName": "robot.robot_web.web_get_robotlist",
 		"paras": {
 			"accountId": {
@@ -123,11 +118,6 @@ funcList = {
 			"name": {
 				"type": PARAM_TYPE_STRING,
 				"descCN": "机器人名称",
-				"default": ""
-			},
-			"phoneNumber": {
-				"type": PARAM_TYPE_STRING,
-				"descCN": "电话号码",
 				"default": ""
 			}
 		}
