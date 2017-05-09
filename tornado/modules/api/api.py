@@ -4,7 +4,6 @@
 from conf.dbconfig import TB_APITRACE
 from core import dbmysql
 from core.err_code import SEGMENT_NOT_EXIST, OCT_SUCCESS, err_desc_ch
-from core.eids_code import EID_TASK_CREATE
 from core.log import ERROR, WARNING, oct_logging, LVL_NOTIFY
 from models.Api import Api, API_STATE_NEW, API_STATE_FINISHED
 from utils.commonUtil import CRC32
@@ -30,12 +29,6 @@ def addTask(db, arg, taskParas):
 
 	api.request = taskParas
 	ret = api.add()
-
-	oct_logging(EID_TASK_CREATE,
-		LVL_NOTIFY,
-		api.user,
-		(api.name, api.myId),
-		ret)
 
 	return (ret, api.myId)
 
