@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {% include 'head.html' %}
+</head>
+<body>
+
+{% include 'header.html' %}
+
+    <textarea title="" id="mediaType" hidden style="height: 1px">
+    </textarea>
+
+
+<div class="container">
+
+    <h2 style="text-align: left">机器人列表</h2>
+
+    <div id="errorPrompt">
+    </div>
+
+    <div style="display: inline-block">
+        <label class="" style="width: 60px;float: left;line-height: 34px; margin-right: 10px">名称：</label>
+        <input type="text" style="margin-right:10px; width: 200px; float: left" placeholder="请输入关键字" id="queryKeyword"
+               name="keyword" value="">
+        <label class="" style="width: 50px;float: left;line-height: 34px; margin-right: 0">账号：</label>
+        <select title="" name='type' class='form-control' style="margin-right:10px; width: 300px; float: left" id="queryAccountList">
+        </select>
+        <input id="moduleQueryButton" style="margin-right:10px; width: 80px; float: left" onclick="doQuery();"
+               type="button" value="刷新" class="btn btn-primary"/>
+    </div>
+
+    <table id="fileListContent" class="table table-striped">
+    </table>
+    <br>
+
+    <div class="btn btn-primary" style="float: right; margin-right: 15px" onclick="uploadImage();">本地上传</div>
+    <div class="btn btn-primary" style="float: right; margin-right: 15px" onclick="addImage();">添加</div>
+
+    {% include 'dataConfirmModal.html' %}
+
+    {% include 'footer.html' %}
+
+</div>
+
+
+
+<div class="modal fade" style="top: 20%" id="modalAddFile" tabindex="-1" role="dialog"
+     aria-labelledby="modalAddFileLabel" aria-hidden="true">
+    <div class="modal-dialog" style="width: 40%">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 id="modalAddFileTitle" class="modal-title">
+                    添加镜像
+                </h4>
+            </div>
+            <div style="margin-left: 5px; margin-right: 5px" id="modalAddFileBody">
+
+                <label for="imageName1">镜像名称</label><span style="color: red">*</span>
+                <input id="imageName1" type="text" name="imageName" title=""/>
+
+                <label for="accountId1">账号ID</label><span style="color: red">*</span>
+                <input id="accountId1" type="text" name="accountId" title=""/>
+
+                <label for="imageUuid1">UUID</label>
+                <input id="imageUuid1" type="text" name="imageUuid" title=""/>
+
+                <label for="imagePlatform1">平台类型</label><span style="color: red">*</span>
+                <input id="imagePlatform1" type="text" name="imagePlatform" placeholder="Windows" value="Windows"
+                       title=""/>
+
+                <label for="imageGuestOs1">客户操作系统</label><span style="color: red">*</span>
+                <input id="imageGuestOs1" type="text" name="imageGuestOs" placeholder="Windows 7" value="Windows 7"
+                       title=""/>
+
+                <label for="imageFormat1">磁盘格式</label><span style="color: red">*</span>
+                <input id="imageFormat1" type="text" name="imageFormat" placeholder="qcow2/raw" value="qcow2"
+                       title=""/>
+
+                <label for="imageUrl1">磁盘1URL</label><span style="color: red">*</span>
+                <input id="imageUrl1" type="text" name="imageUrl1" title=""/>
+
+                <label for="imageUrl2">磁盘2URL</label><span style="color: red">*</span>
+                <input id="imageUrl2" type="text" name="imageUrl1" title=""/>
+
+                <label for="imageUrl3">磁盘3URL</label><span style="color: red">*</span>
+                <input id="imageUrl3" type="text" name="imageUrl1" title=""/>
+
+            </div>
+            <br>
+            <div class="modal-footer">
+                <button id="modalAddFileCallback" class="btn btn-primary" style="font-size: 120%" data-dismiss="modal">
+                    确定
+                </button>
+                <button class="btn btn-default" style="font-size: 120%" data-dismiss="modal">取消</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    function getKeyword() {
+        return $("#queryKeyword").val();
+    }
+
+    function getQueryAccount() {
+        return getSelectedOption("#queryAccountList");
+    }
+
+    function doQuery() {
+        var keyword = getKeyword();
+        var account = getQueryAccount();
+
+        updateFileList(keyword, account);
+    }
+
+    function updateAccountList() {
+
+        json = {
+            "api": "octlink.mcrobot.v1.account.APIShowAccountList",
+            "paras": {
+                "timeout": 0
+            },
+            "session": {
+                "uuid": "00000000000000000000000000000000",
+                "skey": "00000000000000000000000000000000"
+            },
+            "async": false
+        };
+
+        bodyStr = JSON.stringify(json);
+
+        httpPost("/api/", bodyStr, function (resJson) {
+
+            retData = parseResponse(resJson);
+            if (retData === null) {
+                return;
+            }
+
+            updateAccountTable(retData);
+        });
+    }
+
+    function updateFileList(keyword, account) {
+
+        json = {
+            "api": "octlink.wcrobot.v1.robot.APIShowAllRobot",
+            "paras": {
+                "timeout": 0,
+                "accountId": account
+            },
+            "session": {
+                "uuid": "00000000000000000000000000000000",
+                "skey": "00000000000000000000000000000000"
+            },
+            "async": false
+        };
+
+        bodyStr = JSON.stringify(json);
+
+        httpPost("/api/", bodyStr, function (resJson) {
+
+            retData = parseResponse(resJson);
+            if (retData === null) {
+                return;
+            }
+
+            updateFileTable(retData["robots"]);
+        });
+    }
+
+    function createHeader() {
+
+        bodyStr = "<tr><th>名称</th>";
+        bodyStr += "<th>微信Id</th>";
+        bodyStr += "<th>状态</th>";
+        bodyStr += "<th>上次登录</th>";
+        bodyStr += "<th>创建时间</th>";
+        bodyStr += "<th>操作</th></tr>";
+
+        return $(bodyStr);
+    }
+
+    function raiseDetail(image) {
+
+        $detailBody = $("#modalDetailBody");
+
+        if ($detailBody !== null) {
+
+            var bodyStr = "";
+
+            fileObj = image["files"][0];
+
+            bodyStr += "<table class=\"table table-striped table-hover\">";
+            bodyStr += "<tr><th>属性</th><th>内容</th></tr>";
+            bodyStr += "<tr><td>UUID</td><td>" + image["id"] + "</td></tr>";
+            bodyStr += "<tr><td>镜像名称</td><td>" + image["imageName"] + "</td></tr>";
+            bodyStr += "<tr><td>媒体类型</td><td>" + image["mediaType"] + "</td></tr>";
+
+            $detailBody.html(bodyStr);
+
+            // to modify lable
+            $lable = $("#modalDetailTitle");
+            if ($lable !== null) {
+                $lable.html("镜像详情-" + image["imageName"]);
+            }
+
+            $("#modalDetail").modal("show");
+        } else {
+            updateErrorPrompt("error", "获取详细页面错误！");
+        }
+    }
+
+    function printImage(dataObj) {
+
+        bodyStr = "<tr><td>" + dataObj["name"] + "</td>";
+        bodyStr += "<td>" + dataObj["uid"] + "</td>";
+        bodyStr += "<td>" + dataObj["stateCN"] + "</td>";
+        bodyStr += "<td>" + dataObj["lastLogin"] + "</td>";
+        bodyStr += "<td>" + dataObj["createTime"] + "</td>";
+        bodyStr += "<td><button class=\"btn btn-success detail-button\" onclick=\"raiseDetail(dataObj);\" style=\"margin-right: 10px\" >详细</button>";
+        bodyStr += "<button class=\"btn btn-warning detail-button\" onclick=\"funcNotFound('" + dataObj["id"] + "');\" style=\"margin-right: 10px\">编辑</button>";
+        bodyStr += "<button class=\"btn btn-info detail-button\" onclick=\"downloadImage('" + dataObj["id"] + "');\" style=\"margin-right: 10px\">下载</button>";
+        bodyStr += "<button class=\"btn btn-primary detail-button\" onclick=\"funcNotFound('" + dataObj["id"] + "');\" style=\"margin-right: 10px\">导出</button>";
+        bodyStr += "<button class=\"btn btn-danger detail-button\" onclick=\"removeImage('" + dataObj["id"] + "');\" style=\"margin-right: 10px\" >删除</button></td></tr>";
+
+        $tr = $(bodyStr);
+
+        $tr.dblclick(function () {
+            raiseDetail(dataObj);
+        });
+
+        return $tr;
+    }
+
+    var g_images = {};
+
+    function updateFileTable(fileList) {
+
+        $fileTable = $("#fileListContent");
+
+        $fileTable.html("");
+        $fileTable.append(createHeader());
+
+        for (var i = 0; i < fileList.length; i++) {
+            dataObj = fileList[i];
+            $tr = printImage(dataObj);
+            $fileTable.append($tr);
+            g_images[dataObj["id"]] = dataObj;
+        }
+    }
+
+    function updateAccountTable(fileList) {
+
+        $fileTable = $("#queryAccountList");
+
+        $fileTable.html("");
+
+        bodyStr = "";
+        for (var i = 0; i < fileList.length; i++) {
+            bodyStr += "<option>" + fileList[i] + "</option>";
+        }
+
+        $fileTable.html(bodyStr);
+    }
+
+    function raiseRemoveModal(imageId, prompt) {
+
+        $("#modalConfirmPrompt").html(prompt);
+
+        $("#modalConfirmCallback").click(function () {
+            json = {
+                "api": "octlink.backupstorage.v5.image.APIRemoveImage",
+                "paras": {
+                    "timeout": 0,
+                    "id": imageId,
+                    "mediaType": mediaType
+                },
+                "async": false
+            };
+
+            bodyStr = JSON.stringify(json);
+
+            httpPost("/api/", bodyStr, function (resJson) {
+                parseResponse(resJson);
+                $("#modalConfirm").modal("hide");
+                updateFileList(getKeyword());
+            });
+        });
+
+        $("#modalConfirm").modal("show");
+    }
+
+    function removeImage(fileName) {
+        raiseRemoveModal(fileName, "您确认删除此镜像？");
+    }
+
+    function prepareUploadParas() {
+        $form = $("#uploadIsoForm");
+
+        var query = $form.attr("action");
+
+        query += "?" + "name=" + $("#imageName").val() + "&";
+        query += "uuid=" + $("#imageUuid").val() + "&";
+        query += "platform=" + $("#imagePlatform").val() + "&";
+        query += "accountId=" + $("#accountId").val() + "&";
+        query += "mediaType=RootVolumeTemplate&";
+        query += "format=" + $("#imageFormat").val() + "&";
+        query += "guestOs=" + $("#imageGuestOs").val();
+
+        $form.attr("action", query);
+    }
+
+    function downloadImage(imageId) {
+        image = g_images[imageId];
+
+        if (image !== null) {
+            fileList = image["files"];
+
+            for (var i = 0; i < fileList.length; i++) {
+                file = fileList[i];
+                window.open(file["downloadUrl"], "_target");
+            }
+        }
+    }
+
+    function raiseAddModal() {
+
+        $("#modalAddFileCallback").click(function () {
+
+            fileName = $("#imageName1").val();
+
+            url1 = $("#imageUrl1").val();
+            url2 = $("#imageUrl2").val();
+            url3 = $("#imageUrl3").val();
+
+            imageId = $("#imageUuid1").val();
+            platform = $("#imagePlatform1").val();
+            guestOs = $("#imageGuestOs1").val();
+
+            format = $("#imageFormat1").val();
+
+            accountId = $("#accountId1").val();
+
+            json = {
+                "api": "octlink.backupstorage.v5.image.APIAddImage",
+                "paras": {
+                    "timeout": 0,
+                    "name": fileName,
+                    "url1": url1,
+                    "url2": url2,
+                    "url3": url3,
+                    "id": imageId,
+                    "platform": platform,
+                    "guestOsType": guestOs,
+                    "format": format,
+                    "accountId": accountId,
+                    "mediaType": "RootVolumeTemplate"
+                },
+                "async": false
+            };
+
+            bodyStr = JSON.stringify(json);
+
+            httpPost("/api/", bodyStr, function (resJson) {
+                $("#modalAddFile").modal("hide");
+                updateFileList(getKeyword());
+            });
+        });
+
+        $("#modalAddFile").modal("show");
+    }
+
+    function raiseUploadModal() {
+        $("#modalUploadFile").modal("show");
+    }
+
+    function addImage() {
+        raiseAddModal();
+    }
+
+    function uploadImage() {
+        raiseUploadModal();
+    }
+
+    var mediaType = $("#mediaType").val().split("\n")[0];
+
+    updateAccountList();
+
+    doQuery();
+
+</script>
+
+</body>
+
+</html>

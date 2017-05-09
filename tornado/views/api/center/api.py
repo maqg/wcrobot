@@ -13,4 +13,5 @@ PARAM_TYPE_BOOLEAN = "boolean"
 API_MODULE_LIST = [
 	"account",
 	"robot",
+	"config"
 ]

@@ -32,16 +32,9 @@
         $configTable = $("#configurationContent");
 
         bodyStr += "<tr><th>属性</th><th>内容</th></tr>";
-        bodyStr += "<tr><td>根目录</td><td>" + dataObj["baseDir"] + "</td></tr>";
-        bodyStr += "<tr><td>总容量</td><td>" + getFileSize(dataObj["capacity"] * 1024) + "</td></tr>";
-        bodyStr += "<tr><td>可用容量</td><td>" + getFileSize(dataObj["available"] * 1024) + "</td></tr>";
-        bodyStr += "<tr><td>使用率</td><td>" + dataObj["rate"] + "</td></tr>";
-        bodyStr += "<tr><td>账号数</td><td>" + dataObj["account"] + "</td></tr>";
-        bodyStr += "<tr><td>根模板镜像</td><td><a class='btn btn-info detail-button' href='/ui/roottemplate/'>" + dataObj["root"] + " 个</a></td></tr>";
-        bodyStr += "<tr><td>ISO镜像</td><td><a class='btn btn-info detail-button' href='/ui/isotemplate/'>" + dataObj["iso"] + " 个</a></td></tr>";
-        bodyStr += "<tr><td>数据盘镜像</td><td><a class='btn btn-info detail-button' href='/ui/datatemplate/'>" + dataObj["dataDisk"] + " 个</a></td></tr>";
-        bodyStr += "<tr><td>SnapShots</td><td><a class='btn btn-info detail-button' href='/ui/snapshot/'>" + dataObj["snapshot"] + " 个</a></td></tr>";
-        bodyStr += "<tr><td>文件</td><td><a class='btn btn-info detail-button' href='/ui/file/'>" + dataObj["file"] + " 个</a></td></tr>";
+        bodyStr += "<tr><td>账号数</td><td><a class='btn btn-info detail-button' href='/ui/account/'>" + dataObj["accounts"] + " 个</a></td></tr>";
+        bodyStr += "<tr><td>机器人数</td><td><a class='btn btn-info detail-button' href='/ui/robot/'>" + dataObj["robots"] + " 个</a></td></tr>";
+        bodyStr += "<tr><td>消息数</t><td><a class='btn btn-info detail-button' href='/ui/snapshot/'>" + dataObj["messages"] + " 个</a></td></tr>";
 
         $configTable.html(bodyStr);
     }
@@ -49,9 +42,13 @@
     function updateConfiguration(keyword) {
 
         json = {
-            "api": "octlink.backupstorage.v5.config.APIShowBsInfo",
+            "api": "octlink.wcrobot.v1.config.APIShowSystemInfo",
             "paras": {
                 "timeout": 0
+            },
+            "session": {
+                "uuid": "00000000000000000000000000000000",
+                "skey": "00000000000000000000000000000000"
             },
             "async": false
         };

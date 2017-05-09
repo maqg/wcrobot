@@ -3,23 +3,17 @@
 
 from core.err_code import SEGMENT_NOT_EXIST, UNACCP_PARAS, PERMISSION_NOT_ENOUGH
 from core.log import ERROR
-from core.service import callWebServiceDir, callServerWebServiceDir
+from core.service import callWebServiceDir
 from modules.api.api_web import web_add_api
 from utils.commonUtil import buildRetObj
 from utils.httpUtil import checkParas
 
-IGNORE_SESSION_APIS = ["APILoginByAccount", "APILogOut"]
+IGNORE_SESSION_APIS = ["APILogin", "APILogOut"]
 
 
 def writeApi(arg, session, apiProto):
 	retObj = callWebServiceDir(web_add_api, session, arg, apiProto)
 	retObj["session"] = session
-	retObj["apiId"] = retObj["RetObj"]["id"]
-	return retObj
-
-
-def writeServerApi(arg, apiProto):
-	retObj = callServerWebServiceDir(web_add_api, arg, apiProto)
 	retObj["apiId"] = retObj["RetObj"]["id"]
 	return retObj
 
@@ -55,22 +49,3 @@ def doDispatching(arg, session, API_LIST):
 		return writeApi(arg, session, apiProto)
 	else:
 		return callWebServiceDir(apiProto["func"], session, arg, apiProto)
-
-
-def doServerDispatching(arg, API_LIST):
-	apiProto = API_LIST.get(arg.get("api"))
-	if (not apiProto):
-		ERROR("func of %s not exist" % arg.get("api"))
-		return buildRetObj(SEGMENT_NOT_EXIST)
-
-	ret, errorMsg = checkParas(arg.get("paras"), apiProto)
-	if (not ret):
-		ERROR("check paras error [%s]" % errorMsg)
-		return buildRetObj(UNACCP_PARAS, errorLog=errorMsg)
-
-	arg["async"] = False  #TBD
-
-	if (arg.get("async")):
-		return writeServerApi(arg, apiProto)
-	else:
-		return callServerWebServiceDir(apiProto["func"], arg, apiProto)

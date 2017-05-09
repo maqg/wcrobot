@@ -30,28 +30,34 @@ from views.api.center.api import API_MODULE_LIST, API_PREFIX, PARAM_TYPE_INT
 LISTEN_PORT = 8080
 LISTEN_ADDR = "0.0.0.0"
 
-API_PROTOS = { }
+API_PROTOS = {}
+API_VIEW_LIST = {}
 
-API_VIEW_LIST = { }
+TEMPLATE_NOT_FOUND = "pagenotfound.html"
+TEMPLATE_ROBOT = "robot.html"
+TEMPLATE_DASHBOARD = "dashboard.html"
+TEMPLATE_CONFIG = "config.html"
 
-SERVER_API_PROTOS = { }
+TEMPLATE_LIST = {
+	"index": TEMPLATE_DASHBOARD,
+	"robot": TEMPLATE_ROBOT,
+	"config": TEMPLATE_CONFIG,
+}
 
-MB = 1024 * 1024
-GB = 1024 * MB
-TB = 1024 * GB
-MAX_STREAMED_SIZE = 1 * TB  # Max. size streamed in one request!
+
+def getTemplate(module="index"):
+	return TEMPLATE_LIST.get(module) or (TEMPLATE_NOT_FOUND)
 
 
 class Application(tornado.web.Application):
 	def __init__(self):
 		handlers = [
 			(r"/", MainHandler),
-			(r"/noVNC/(.*)", VNCHandler),
-			(r"/src/templates/(.*)", SrcHandler),
-			(r"/less/font/(.*)", FontHandler),
+			(r"/ui/", MainHandler),
+			(r"/ui/(.*)/", MainHandler),
+			(r"/ui/(.*)/(.*)/", MainHandler),
 			(r"/api/", ApiHandler),
 			(r"/api/test/", ApiTestHandler),
-			(r'^/ws/', WSHandler),
 			(r"/files/upload/", FileUploadHandler),
 		]
 		settings = dict(
@@ -64,36 +70,14 @@ class Application(tornado.web.Application):
 
 
 class MainHandler(tornado.web.RequestHandler):
-	def get(self):
-		self.render("index.html")
-
-
-class FontHandler(tornado.web.RequestHandler):
-	def get(self, filepath=None):
-		self.redirect("/static/less/font/%s" % (filepath))
-
-
-class SrcHandler(tornado.web.RequestHandler):
-	def get(self, filepath=None):
-		query = self.request.query
-		if (query):
-			self.redirect("/static/src/templates/%s?%s" % (filepath, query))
+	@tornado.web.asynchronous
+	@tornado.gen.coroutine
+	def get(self, module="index", action=None):
+		templatePath = getTemplate(module)
+		if (not templatePath):
+			self.render(TEMPLATE_NOT_FOUND)
 		else:
-			self.redirect("/static/src/templates/%s" % filepath)
-
-
-class VNCHandler(tornado.web.RequestHandler):
-	def get(self, filepath=None):
-		query = self.request.query
-		if (query):
-			self.redirect("/static/noVNC/%s?%s" % (filepath, query))
-		else:
-			self.redirect("/static/noVNC/%s" % filepath)
-
-
-class WSHandler(tornado.web.RequestHandler):
-	def get(self):
-		self.render("ws.html")
+			self.render(templatePath)
 
 
 class ApiTestHandler(tornado.web.RequestHandler):
@@ -197,7 +181,7 @@ class FileUploadHandler(tornado.web.RequestHandler):
 			with open(filePath, 'wb') as up:
 				up.write(meta['body'])
 
-		argObj = appendBaseArg({ }, self.request)
+		argObj = appendBaseArg({}, self.request)
 		argObj["paras"]["role"] = 7
 		argObj["paras"]["accountId"] = DEFAULT_ACCOUNT_ID
 
@@ -237,11 +221,11 @@ class ApiHandler(tornado.web.RequestHandler):
 
 		if (apiName.split(".")[-1] in IGNORE_SESSION_APIS):
 			DEBUG("User login API, no need check session")
-			return (True, { })
+			return (True, {})
 
 		sessionId = getSessionId(argObj)
 		if (not sessionId):
-			return (False, { })
+			return (False, {})
 
 		DEBUG("got session id %s" % sessionId)
 
@@ -349,7 +333,7 @@ def loadAPIs():
 def loadViewAPIs():
 	def copy_paras(paras):
 
-		copyed_paras = { }
+		copyed_paras = {}
 		for (k, v) in list(paras.items()):
 			copyed_paras[k] = v
 
@@ -379,7 +363,7 @@ def loadViewAPIs():
 			apiProto = {
 				"name": v["name"],
 				"key": key,
-				"paras": copy_paras(v.get("paras") or { })
+				"paras": copy_paras(v.get("paras") or {})
 			}
 			API_VIEW_LIST[moduleName].append(apiProto)
 
@@ -395,7 +379,7 @@ def init():
 	return True
 
 
-#def startApiEngine():
+# def startApiEngine():
 #	_thread.start_new_thread(apiEngine, ("API Engine Thread", 20))
 
 

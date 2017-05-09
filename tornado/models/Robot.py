@@ -96,6 +96,7 @@ class WCRobot:
 		self.myId = self.dbObj["ID"]
 		self.name = self.dbObj["R_Name"]
 		self.state = self.dbObj["R_State"]
+		self.uid = self.dbObj["R_UId"]
 		self.stateCN = robotState_d2s(self.state)
 		self.lastLogin = self.dbObj["R_LastLogin"]
 		self.lastSync = self.dbObj["R_LastSync"]
@@ -107,6 +108,7 @@ class WCRobot:
 
 		robotObj = {
 			"R_LastLogin": get_current_time(),
+			"R_UId": self.uid,
 		}
 
 		cond = "WHERE ID='%s'" % self.myId
@@ -172,10 +174,11 @@ class WCRobot:
 			"id": self.myId,
 			"name": self.name,
 			"state": self.state,
+			"stateCN": self.stateCN,
+			"uid": self.uid,
 			"lastLogin": howLongAgo(self.lastLogin),
 			"lastSync": getStrTime(self.lastSync),
 			"createTime": getStrTime(self.createTime),
-			"stateCN": self.stateCN
 		}
 
 		return obj
