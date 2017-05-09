@@ -75,13 +75,10 @@ class Account:
 		self.state = 1
 		self.stateCN = ""
 		self.roleCN = ""
-		self.quotaId = None
-		self.quota = None
 
 		self.lastLogin = 0
 		self.lastSync = 0
 		self.createTime = 0
-		self.ukey = ""
 
 	def init(self):
 
@@ -107,7 +104,6 @@ class Account:
 		self.myId = self.dbObj["ID"]
 		self.name = self.dbObj["U_Name"]
 		self.email = self.dbObj["U_Email"]
-		self.quotaId = self.dbObj["U_QuotaId"]
 		self.phone = self.dbObj["U_PhoneNumber"]
 		self.password = self.dbObj["U_Password"]
 		self.state = self.dbObj["U_State"]
@@ -117,13 +113,8 @@ class Account:
 		self.lastLogin = self.dbObj["U_LastLogin"]
 		self.lastSync = self.dbObj["U_LastSync"]
 		self.createTime = self.dbObj["U_CreateTime"]
-		self.ukey = self.dbObj["U_UKey"]
 
 		return 0
-
-	def loadQuota(self):
-		self.quota = Quota(self.db, self.quotaId)
-		self.quota.init()
 
 	def updateLogin(self):
 
@@ -142,7 +133,6 @@ class Account:
 		userObj = {
 			"U_Email": self.email,
 			"U_PhoneNumber": self.phone,
-			"U_UKey": self.ukey,
 			"U_LastSync": get_current_time(),
 		}
 
@@ -164,8 +154,6 @@ class Account:
 			"U_PhoneNumber": self.phone,
 			"U_CreateTime": get_current_time(),
 			"U_LastSync": get_current_time(),
-			"U_UKey": self.ukey,
-			"U_QuotaId": self.quotaId,
 		}
 
 		ret = self.db.insert(TB_ACCOUNT, userObj)
@@ -197,16 +185,6 @@ class Account:
 
 	def auth(self, password):
 		cond = "WHERE ID='%s' AND U_Password='%s'" % (self.myId, getEncPass(password))
-		userObj = self.db.fetchone(TB_ACCOUNT, cond=cond)
-		if (not userObj):
-			return USER_PASSWD_ERR
-
-		self.updateLogin()
-
-		return OCT_SUCCESS
-
-	def authUkey(self, ukey):
-		cond = "WHERE ID='%s' AND U_UKey='%s'" % (self.myId, ukey)
 		userObj = self.db.fetchone(TB_ACCOUNT, cond=cond)
 		if (not userObj):
 			return USER_PASSWD_ERR
@@ -257,14 +235,10 @@ class Account:
 			"lastLogin": howLongAgo(self.lastLogin),
 			"lastSync": getStrTime(self.lastSync),
 			"createTime": getStrTime(self.createTime),
-			"ukey": self.ukey,
 			"role": self.role,
 			"roleCN": self.roleCN,
 			"stateCN": self.stateCN
 		}
-
-		if self.quota:
-			account["quota"] = self.quota.toObj()
 
 		return account
 

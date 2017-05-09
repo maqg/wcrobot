@@ -9,7 +9,6 @@ from utils.commonUtil import getUuid, transToStr, transToObj, CRC32
 
 API_STATE_NEW = "New"
 API_STATE_RUNNING = "Running"
-API_STATE_SERVERRUNNING = "ServerRunning"
 API_STATE_FAILED = "Failed"
 API_STATE_FINISHED = "Finished"
 
@@ -29,7 +28,6 @@ class Api:
 		self.type = "api"
 		self.name = ""
 		self.request = { }
-		self.serverRequest = { }
 		self.reply = { }
 		self.state = API_STATE_NEW
 		self.startTime = 0
@@ -66,7 +64,6 @@ class Api:
 			"AT_State": self.state,
 			"AT_User": self.user or "",
 			"AT_Request": transToStr(self.request),
-			"AT_ServerRequest": transToStr(self.serverRequest),
 			"AT_Reply": transToStr(self.reply),
 			"AT_StartTime": get_current_time(),
 			"AT_CreateTime": get_current_time(),
@@ -118,7 +115,6 @@ class Api:
 		self.user = transToObj(self.dbObj["AT_User"])
 		self.apiId = self.dbObj["AT_ApiId"]
 		self.request = transToObj(self.dbObj["AT_Request"])
-		self.serverRequest = transToObj(self.dbObj["AT_ServerRequest"])
 		self.reply = transToObj(self.dbObj["AT_Reply"])
 		self.startTime = self.dbObj["AT_StartTime"]
 		self.finishTime = self.dbObj["AT_FinishTime"]
@@ -145,7 +141,6 @@ class Api:
 			"request": self.request,
 			"reply": self.reply,
 			"hashValue": CRC32(self.myId + self.state),
-			"serverRequest": self.serverRequest,
 			"startTime": getStrTime(self.startTime),
 			"finishTime": getStrTime(self.finishTime)
 		}

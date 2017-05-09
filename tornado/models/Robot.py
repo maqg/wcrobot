@@ -33,7 +33,7 @@ def getRobot_byCond(db, robotId=None, robotName=None):
 	if (robotId):
 		cond = "WHERE ID='%s'" % (robotId)
 	else:
-		cond = "WHERE U_Name='%s'" % (robotName)
+		cond = "WHERE R_Name='%s'" % (robotName)
 
 	dbObj = db.fetchone(TB_ROBOT, cond=cond)
 	if (not dbObj):

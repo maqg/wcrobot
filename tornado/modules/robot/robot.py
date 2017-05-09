@@ -20,7 +20,7 @@ def get_robotlist(db):
 		obj = dbmysql.row_to_dict(TB_ROBOT, dur)
 		temp = {
 			"id": obj["ID"],
-			"name": obj["U_Name"],
+			"name": obj["R_Name"],
 		}
 		robot_list.append(temp)
 
