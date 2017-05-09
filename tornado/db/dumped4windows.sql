@@ -57,7 +57,7 @@ CREATE TABLE `tb_account` (
 
 LOCK TABLES `tb_account` WRITE;
 /*!40000 ALTER TABLE `tb_account` DISABLE KEYS */;
-INSERT INTO `tb_account` VALUES ('c9b7c22a0ae911e7af10525400659eb7',1,7,'admin','00000000000000000000000000000000','','292f137f691469948acd0e72b141e373','','',0,1494142537000,0,'');
+INSERT INTO `tb_account` VALUES ('c9b7c22a0ae911e7af10525400659eb7',1,7,'admin','00000000000000000000000000000000','','292f137f691469948acd0e72b141e373','','',0,1494294915000,0,'');
 /*!40000 ALTER TABLE `tb_account` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -78,36 +78,6 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
-
---
--- Table structure for table `tb_apirecord`
---
-
-DROP TABLE IF EXISTS `tb_apirecord`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `tb_apirecord` (
-  `ID` bigint(20) NOT NULL AUTO_INCREMENT,
-  `TIME` bigint(20) NOT NULL DEFAULT '0',
-  `USER` varchar(128) NOT NULL DEFAULT 'none',
-  `URL` varchar(1024) NOT NULL DEFAULT '',
-  `PARAS` text NOT NULL,
-  `RESULT` text NOT NULL,
-  PRIMARY KEY (`ID`),
-  KEY `tb_apirecord_id` (`ID`),
-  KEY `tb_apirecord_time` (`TIME`),
-  KEY `tb_apirecord_user` (`USER`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `tb_apirecord`
---
-
-LOCK TABLES `tb_apirecord` WRITE;
-/*!40000 ALTER TABLE `tb_apirecord` DISABLE KEYS */;
-/*!40000 ALTER TABLE `tb_apirecord` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `tb_apitrace`
@@ -200,7 +170,7 @@ CREATE TABLE `tb_misc` (
   PRIMARY KEY (`ID`),
   KEY `tb_misc_id` (`ID`),
   KEY `tb_misc_name` (`M_Name`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -209,9 +179,64 @@ CREATE TABLE `tb_misc` (
 
 LOCK TABLES `tb_misc` WRITE;
 /*!40000 ALTER TABLE `tb_misc` DISABLE KEYS */;
-INSERT INTO `tb_misc` VALUES (1,'hostname','RVM-V5','common');
 /*!40000 ALTER TABLE `tb_misc` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Table structure for table `tb_robot`
+--
+
+DROP TABLE IF EXISTS `tb_robot`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tb_robot` (
+  `ID` varchar(36) NOT NULL DEFAULT '',
+  `R_AccountId` varchar(128) NOT NULL DEFAULT '',
+  `R_Name` varchar(128) NOT NULL DEFAULT '',
+  `R_UId` varchar(128) NOT NULL DEFAULT '',
+  `R_State` tinyint(4) NOT NULL DEFAULT '1' COMMENT '1: OK, 0: Bad',
+  `R_LastLogin` bigint(20) NOT NULL DEFAULT '0',
+  `R_LastSync` bigint(20) NOT NULL DEFAULT '0',
+  `R_CreateTime` bigint(20) NOT NULL DEFAULT '0',
+  `U_UKey` varchar(36) NOT NULL DEFAULT '' COMMENT 'UKEY Id',
+  `U_Description` varchar(1024) NOT NULL DEFAULT '',
+  PRIMARY KEY (`ID`),
+  KEY `tb_robot_id` (`ID`),
+  KEY `tb_robot_uid` (`R_UId`),
+  KEY `tb_robot_accountid` (`R_AccountId`),
+  KEY `tb_robot_state` (`R_State`),
+  KEY `tb_robot_name` (`R_Name`),
+  KEY `tb_robot_createtime` (`R_CreateTime`),
+  KEY `tb_robot_lastlogin` (`R_LastLogin`),
+  KEY `tb_robot_lastsync` (`R_LastSync`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tb_robot`
+--
+
+LOCK TABLES `tb_robot` WRITE;
+/*!40000 ALTER TABLE `tb_robot` DISABLE KEYS */;
+/*!40000 ALTER TABLE `tb_robot` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = '' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER trigger_delete_robot AFTER DELETE ON tb_robot FOR EACH ROW
+BEGIN
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 
 --
 -- Table structure for table `tb_session`
@@ -245,6 +270,7 @@ CREATE TABLE `tb_session` (
 
 LOCK TABLES `tb_session` WRITE;
 /*!40000 ALTER TABLE `tb_session` DISABLE KEYS */;
+INSERT INTO `tb_session` VALUES ('00000000000000000000000000000000','c9b7c22a0ae911e7af10525400659eb7',7,'admin','{\"role\": 7, \"id\": \"c9b7c22a0ae911e7af10525400659eb7\", \"name\": \"admin\"}',1494232313605,0,1809592313605);
 /*!40000 ALTER TABLE `tb_session` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -257,68 +283,6 @@ UNLOCK TABLES;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER trigger_delete_session AFTER DELETE ON tb_session FOR EACH ROW 
-BEGIN
-END */;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-
---
--- Table structure for table `tb_user`
---
-
-DROP TABLE IF EXISTS `tb_user`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `tb_user` (
-  `ID` varchar(36) NOT NULL DEFAULT '',
-  `U_Name` varchar(128) NOT NULL DEFAULT '',
-  `U_State` tinyint(4) NOT NULL DEFAULT '1' COMMENT '1: OK, 0: Bad',
-  `U_Type` int(11) NOT NULL DEFAULT '0' COMMENT '0 for terminal user',
-  `U_LastLogin` bigint(20) NOT NULL DEFAULT '0',
-  `U_LastSync` bigint(20) NOT NULL DEFAULT '0',
-  `U_CreateTime` bigint(20) NOT NULL DEFAULT '0',
-  `U_Password` varchar(128) NOT NULL DEFAULT '',
-  `U_Email` varchar(128) NOT NULL DEFAULT '',
-  `U_UKey` varchar(36) NOT NULL DEFAULT '' COMMENT 'UKEY Id',
-  `U_VmPassword` varchar(1024) NOT NULL DEFAULT '',
-  `U_PhoneNumber` varchar(32) NOT NULL DEFAULT '',
-  `U_Description` varchar(1024) NOT NULL DEFAULT '',
-  PRIMARY KEY (`ID`),
-  KEY `tb_user_id` (`ID`),
-  KEY `tb_user_state` (`U_State`),
-  KEY `tb_user_name` (`U_Name`),
-  KEY `tb_user_type` (`U_Type`),
-  KEY `tb_user_email` (`U_Email`),
-  KEY `tb_user_ukey` (`U_UKey`),
-  KEY `tb_user_phonenumber` (`U_PhoneNumber`),
-  KEY `tb_user_password` (`U_Password`),
-  KEY `tb_user_createtime` (`U_CreateTime`),
-  KEY `tb_user_lastlogin` (`U_LastLogin`),
-  KEY `tb_user_lastsync` (`U_LastSync`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `tb_user`
---
-
-LOCK TABLES `tb_user` WRITE;
-/*!40000 ALTER TABLE `tb_user` DISABLE KEYS */;
-/*!40000 ALTER TABLE `tb_user` ENABLE KEYS */;
-UNLOCK TABLES;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8 */ ;
-/*!50003 SET character_set_results = utf8 */ ;
-/*!50003 SET collation_connection  = utf8_general_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = '' */ ;
-DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER trigger_delete_user AFTER DELETE ON tb_user FOR EACH ROW
 BEGIN
 END */;;
 DELIMITER ;
@@ -342,14 +306,14 @@ SET character_set_client = utf8;
 SET character_set_client = @saved_cs_client;
 
 --
--- Temporary table structure for view `v_user`
+-- Temporary table structure for view `v_robot`
 --
 
-DROP TABLE IF EXISTS `v_user`;
-/*!50001 DROP VIEW IF EXISTS `v_user`*/;
+DROP TABLE IF EXISTS `v_robot`;
+/*!50001 DROP VIEW IF EXISTS `v_robot`*/;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
-/*!50001 CREATE TABLE `v_user` (
+/*!50001 CREATE TABLE `v_robot` (
   `ID` tinyint NOT NULL,
   `Name` tinyint NOT NULL
 ) ENGINE=MyISAM */;
@@ -379,11 +343,11 @@ SET character_set_client = @saved_cs_client;
 /*!50001 SET collation_connection      = @saved_col_connection */;
 
 --
--- Final view structure for view `v_user`
+-- Final view structure for view `v_robot`
 --
 
-/*!50001 DROP TABLE IF EXISTS `v_user`*/;
-/*!50001 DROP VIEW IF EXISTS `v_user`*/;
+/*!50001 DROP TABLE IF EXISTS `v_robot`*/;
+/*!50001 DROP VIEW IF EXISTS `v_robot`*/;
 /*!50001 SET @saved_cs_client          = @@character_set_client */;
 /*!50001 SET @saved_cs_results         = @@character_set_results */;
 /*!50001 SET @saved_col_connection     = @@collation_connection */;
@@ -392,7 +356,7 @@ SET character_set_client = @saved_cs_client;
 /*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
-/*!50001 VIEW `v_user` AS select `tb_user`.`ID` AS `ID`,`tb_user`.`U_Name` AS `Name` from `tb_user` */;
+/*!50001 VIEW `v_robot` AS select `tb_robot`.`ID` AS `ID`,`tb_robot`.`R_Name` AS `Name` from `tb_robot` */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
@@ -406,4 +370,4 @@ SET character_set_client = @saved_cs_client;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-05-07 15:35:37
+-- Dump completed on 2017-05-09  9:55:15

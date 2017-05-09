@@ -14,12 +14,6 @@ EOF
 	$MYSQL -u$DB_USER -p$DB_PASSWD $DBNAME < "mysql.sql"
 	$MYSQL -u$DB_USER -p$DB_PASSWD $DBNAME < "view.sql"
 
-#	if [ -f "./class.sql" ]; then
-#		$MYSQL -u$DB_USER -p$DB_PASSWD $DBNAME < "class.sql"
-#		$MYSQL -u$DB_USER -p$DB_PASSWD $DBNAME < "class_view.sql"
-#		$MYSQL -u$DB_USER -p$DB_PASSWD $DBNAME < "class.default"
-#	fi
-
 	echo "initialing default tables...$DBNAME"
 	$MYSQL -u$DB_USER -p$DB_PASSWD $DBNAME < "mysql.default"
 
@@ -37,7 +31,6 @@ EOF
 
 	echo "DB $1 created ok"
 }
-
 
 create_db $DB_NAME
 

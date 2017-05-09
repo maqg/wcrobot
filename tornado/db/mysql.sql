@@ -14,20 +14,6 @@ ALTER TABLE tb_log ADD INDEX tb_log_module (MODULE);
 ALTER TABLE tb_log ADD INDEX tb_log_moduleeid (MODULE, EID);
 ALTER TABLE tb_log ADD INDEX tb_log_pri (PRI);
 
-DROP TABLE IF EXISTS `tb_apirecord`;
-CREATE TABLE `tb_apirecord` (
-		`ID` BIGINT NOT NULL AUTO_INCREMENT,
-		`TIME` BIGINT NOT NULL DEFAULT '0',
-		`USER` VARCHAR(128) NOT NULL DEFAULT 'none',
-		`URL` VARCHAR(1024) NOT NULL DEFAULT '',
-		`PARAS` TEXT NOT NULL,
-		`RESULT` TEXT NOT NULL,
-		PRIMARY KEY (`ID`)
-) ENGINE=Innodb DEFAULT CHARSET=utf8;
-ALTER TABLE tb_apirecord ADD INDEX tb_apirecord_id (ID);
-ALTER TABLE tb_apirecord ADD INDEX tb_apirecord_time (TIME);
-ALTER TABLE tb_apirecord ADD INDEX tb_apirecord_user (USER);
-
 DROP TABLE IF EXISTS `tb_account`;
 CREATE TABLE `tb_account` (
 		`ID` VARCHAR(36) NOT NULL DEFAULT '',
@@ -57,34 +43,28 @@ ALTER TABLE tb_account ADD INDEX tb_account_createtime (U_CreateTime);
 ALTER TABLE tb_account ADD INDEX tb_account_lastlogin (U_LastLogin);
 ALTER TABLE tb_account ADD INDEX tb_account_lastsync (U_LastSync);
 
-DROP TABLE IF EXISTS `tb_user`;
-CREATE TABLE `tb_user` (
+DROP TABLE IF EXISTS `tb_robot`;
+CREATE TABLE `tb_robot` (
 		`ID` VARCHAR(36) NOT NULL DEFAULT '',
-		`U_Name` VARCHAR(128) NOT NULL DEFAULT '',
-		`U_State` TINYINT NOT NULL DEFAULT '1' COMMENT '1: OK, 0: Bad',
-		`U_Type` INTEGER NOT NULL DEFAULT '0' COMMENT '0 for terminal user',
-		`U_LastLogin` BIGINT NOT NULL DEFAULT '0',
-		`U_LastSync` BIGINT NOT NULL DEFAULT '0',
-		`U_CreateTime` BIGINT NOT NULL DEFAULT '0',
-		`U_Password` VARCHAR(128) NOT NULL DEFAULT '',
-		`U_Email` VARCHAR(128) NOT NULL DEFAULT '',
+		`R_AccountId` VARCHAR(128) NOT NULL DEFAULT '',
+		`R_Name` VARCHAR(128) NOT NULL DEFAULT '',
+		`R_UId` VARCHAR(128) NOT NULL DEFAULT '',
+		`R_State` TINYINT NOT NULL DEFAULT '1' COMMENT '1: OK, 0: Bad',
+		`R_LastLogin` BIGINT NOT NULL DEFAULT '0',
+		`R_LastSync` BIGINT NOT NULL DEFAULT '0',
+		`R_CreateTime` BIGINT NOT NULL DEFAULT '0',
 		`U_UKey` VARCHAR(36) NOT NULL DEFAULT '' COMMENT 'UKEY Id',
-		`U_VmPassword` VARCHAR(1024) NOT NULL DEFAULT '',
-		`U_PhoneNumber` VARCHAR(32) NOT NULL DEFAULT '',
 		`U_Description` VARCHAR(1024) NOT NULL DEFAULT '',
 		PRIMARY KEY (`ID`)
 ) ENGINE=Innodb DEFAULT CHARSET=utf8;
-ALTER TABLE tb_user ADD INDEX tb_user_id (ID);
-ALTER TABLE tb_user ADD INDEX tb_user_state (U_State);
-ALTER TABLE tb_user ADD INDEX tb_user_name (U_Name);
-ALTER TABLE tb_user ADD INDEX tb_user_type (U_Type);
-ALTER TABLE tb_user ADD INDEX tb_user_email (U_Email);
-ALTER TABLE tb_user ADD INDEX tb_user_ukey (U_UKey);
-ALTER TABLE tb_user ADD INDEX tb_user_phonenumber (U_PhoneNumber);
-ALTER TABLE tb_user ADD INDEX tb_user_password (U_Password);
-ALTER TABLE tb_user ADD INDEX tb_user_createtime (U_CreateTime);
-ALTER TABLE tb_user ADD INDEX tb_user_lastlogin (U_LastLogin);
-ALTER TABLE tb_user ADD INDEX tb_user_lastsync (U_LastSync);
+ALTER TABLE tb_robot ADD INDEX tb_robot_id (ID);
+ALTER TABLE tb_robot ADD INDEX tb_robot_uid (R_UId);
+ALTER TABLE tb_robot ADD INDEX tb_robot_accountid (R_AccountId);
+ALTER TABLE tb_robot ADD INDEX tb_robot_state (R_State);
+ALTER TABLE tb_robot ADD INDEX tb_robot_name (R_Name);
+ALTER TABLE tb_robot ADD INDEX tb_robot_createtime (R_CreateTime);
+ALTER TABLE tb_robot ADD INDEX tb_robot_lastlogin (R_LastLogin);
+ALTER TABLE tb_robot ADD INDEX tb_robot_lastsync (R_LastSync);
 
 DROP TABLE IF EXISTS `tb_session`;
 CREATE TABLE `tb_session` (
@@ -150,7 +130,7 @@ DROP TRIGGER IF EXISTS trigger_delete_account;
 
 DELIMITER //
 
-CREATE TRIGGER trigger_delete_user AFTER DELETE ON tb_user FOR EACH ROW
+CREATE TRIGGER trigger_delete_robot AFTER DELETE ON tb_robot FOR EACH ROW
 BEGIN
 END; //
 
