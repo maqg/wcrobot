@@ -24,11 +24,9 @@ DROP TABLE IF EXISTS `tb_account`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `tb_account` (
   `ID` varchar(36) NOT NULL DEFAULT '',
-  `U_State` tinyint(4) NOT NULL DEFAULT '1' COMMENT '1: OK, 0: Bad',
+  `U_State` tinyint(4) NOT NULL DEFAULT '1' COMMENT '1: OK, 0: BAD',
   `U_Type` int(11) NOT NULL DEFAULT '3' COMMENT '7: super,3 admin,1 audit',
   `U_Name` varchar(128) NOT NULL DEFAULT '',
-  `U_QuotaId` varchar(36) NOT NULL DEFAULT '',
-  `U_UKey` varchar(36) NOT NULL DEFAULT '' COMMENT 'UKEY Id',
   `U_Password` varchar(128) NOT NULL DEFAULT '',
   `U_Email` varchar(128) NOT NULL DEFAULT '',
   `U_PhoneNumber` varchar(32) NOT NULL DEFAULT '',
@@ -41,7 +39,6 @@ CREATE TABLE `tb_account` (
   KEY `tb_account_state` (`U_State`),
   KEY `tb_account_name` (`U_Name`),
   KEY `tb_account_type` (`U_Type`),
-  KEY `tb_account_ukey` (`U_UKey`),
   KEY `tb_account_email` (`U_Email`),
   KEY `tb_account_phonenumber` (`U_PhoneNumber`),
   KEY `tb_account_password` (`U_Password`),
@@ -57,7 +54,7 @@ CREATE TABLE `tb_account` (
 
 LOCK TABLES `tb_account` WRITE;
 /*!40000 ALTER TABLE `tb_account` DISABLE KEYS */;
-INSERT INTO `tb_account` VALUES ('c9b7c22a0ae911e7af10525400659eb7',1,7,'admin','00000000000000000000000000000000','','292f137f691469948acd0e72b141e373','','',0,1494294915000,0,'');
+INSERT INTO `tb_account` VALUES ('c9b7c22a0ae911e7af10525400659eb7',1,7,'admin','292f137f691469948acd0e72b141e373','','',0,1494312227000,0,'');
 /*!40000 ALTER TABLE `tb_account` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -91,21 +88,18 @@ CREATE TABLE `tb_apitrace` (
   `AT_AccountId` varchar(36) NOT NULL DEFAULT '',
   `AT_Type` varchar(16) NOT NULL DEFAULT 'api' COMMENT 'api or task',
   `AT_ApiId` varchar(200) NOT NULL DEFAULT '',
-  `AT_State` varchar(16) NOT NULL DEFAULT 'New' COMMENT 'New,Loaded,Running,ServerRunning,Failed,Finished',
+  `AT_State` varchar(16) NOT NULL DEFAULT 'New' COMMENT 'New,Loaded,Running,Failed,Finished',
   `AT_Name` varchar(128) NOT NULL DEFAULT '',
   `AT_CreateTime` bigint(20) NOT NULL DEFAULT '0',
   `AT_StartTime` bigint(20) NOT NULL DEFAULT '0',
   `AT_FinishTime` bigint(20) NOT NULL DEFAULT '0',
   `AT_User` varchar(64) NOT NULL DEFAULT '',
-  `AT_ServerTaskId` varchar(36) NOT NULL DEFAULT '',
   `AT_Request` varchar(8192) NOT NULL DEFAULT '{}',
-  `AT_ServerRequest` varchar(8192) NOT NULL DEFAULT '{}',
   `AT_Reply` text NOT NULL,
   PRIMARY KEY (`ID`),
   KEY `tb_apitrace_id` (`ID`),
   KEY `tb_apitrace_type` (`AT_Type`),
   KEY `tb_apitrace_apiid` (`AT_ApiId`),
-  KEY `tb_apitrace_staskid` (`AT_ServerTaskId`),
   KEY `tb_apitrace_user` (`AT_User`),
   KEY `tb_apitrace_accountId` (`AT_AccountId`),
   KEY `tb_apitrace_createtime` (`AT_CreateTime`),
@@ -194,11 +188,10 @@ CREATE TABLE `tb_robot` (
   `R_AccountId` varchar(128) NOT NULL DEFAULT '',
   `R_Name` varchar(128) NOT NULL DEFAULT '',
   `R_UId` varchar(128) NOT NULL DEFAULT '',
-  `R_State` tinyint(4) NOT NULL DEFAULT '1' COMMENT '1: OK, 0: Bad',
+  `R_State` tinyint(4) NOT NULL DEFAULT '1' COMMENT '1: ONLINE, 0: OFFLINE',
   `R_LastLogin` bigint(20) NOT NULL DEFAULT '0',
   `R_LastSync` bigint(20) NOT NULL DEFAULT '0',
   `R_CreateTime` bigint(20) NOT NULL DEFAULT '0',
-  `U_UKey` varchar(36) NOT NULL DEFAULT '' COMMENT 'UKEY Id',
   `U_Description` varchar(1024) NOT NULL DEFAULT '',
   PRIMARY KEY (`ID`),
   KEY `tb_robot_id` (`ID`),
@@ -248,7 +241,7 @@ DROP TABLE IF EXISTS `tb_session`;
 CREATE TABLE `tb_session` (
   `ID` varchar(36) NOT NULL DEFAULT '',
   `S_UserId` varchar(36) NOT NULL DEFAULT '',
-  `S_UserType` tinyint(4) NOT NULL DEFAULT '0' COMMENT '7:superadmin,3:admin,1:audit,0:user,11:classadmin,12:teacher',
+  `S_UserType` tinyint(4) NOT NULL DEFAULT '3' COMMENT '7:superadmin,3:admin',
   `S_UserName` varchar(128) NOT NULL DEFAULT '',
   `S_Cookie` varchar(1024) NOT NULL DEFAULT '',
   `S_CreateTime` bigint(20) NOT NULL DEFAULT '0',
@@ -370,4 +363,4 @@ SET character_set_client = @saved_cs_client;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-05-09  9:55:15
+-- Dump completed on 2017-05-09 14:43:47

@@ -111,7 +111,6 @@ CREATE TABLE `tb_apitrace` (
 ALTER TABLE tb_apitrace ADD INDEX tb_apitrace_id (ID);
 ALTER TABLE tb_apitrace ADD INDEX tb_apitrace_type (AT_Type);
 ALTER TABLE tb_apitrace ADD INDEX tb_apitrace_apiid (AT_ApiId);
-ALTER TABLE tb_apitrace ADD INDEX tb_apitrace_staskid (AT_ServerTaskId);
 ALTER TABLE tb_apitrace ADD INDEX tb_apitrace_user (AT_User);
 ALTER TABLE tb_apitrace ADD INDEX tb_apitrace_accountId (AT_AccountId);
 ALTER TABLE tb_apitrace ADD INDEX tb_apitrace_createtime (AT_CreateTime);
