@@ -2,10 +2,8 @@
 # -*- coding: utf-8 -*-
 
 import os
-import time
 
-from core.modules_code import MOD_WEBUI, MOD_OTHER
-from utils.commonUtil import isSystemWindows, fileToObj
+from utils.commonUtil import fileToObj
 
 PROJECT_PATH = os.path.dirname(__file__)[:-5]
 LOG_FILE_PATH = PROJECT_PATH + os.sep + "var" + os.sep + "logs" + os.sep

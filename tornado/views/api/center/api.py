@@ -10,5 +10,7 @@ PARAM_TYPE_LISTINT = "listint"  # 1,2,3,
 PARAM_TYPE_LISTSTRING = "liststring"  # "4","5","6"
 PARAM_TYPE_BOOLEAN = "boolean"
 
-API_MODULE_LIST = ["account",
-                   ]
+API_MODULE_LIST = [
+	"account",
+	"robot",
+]

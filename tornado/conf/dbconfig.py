@@ -18,7 +18,10 @@ TB_LOG = "tb_log"
 TB_APIRECORD = "tb_apirecord"
 TB_APITRACE = "tb_apitrace"
 TB_SESSION = "tb_session"
+TB_ROBOT = "tb_robot"
 TB_USER = "tb_user"
+
+V_ROBOT = "v_robot"
 
 
 def get_sock_file():
