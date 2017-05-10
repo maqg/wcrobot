@@ -22,18 +22,8 @@ LVL_INFO = 6
 LVL_DEBUG = 7
 
 LOG_LEVELS = ["Emerg", "Alert", "Crit", "Error", "Warn", "Notify", "Info", "Debug"]
-
-MAX_USING_TIMEOUT = 10  # seconds
-
 LOG_HOST = "127.0.0.1"
 LOG_PORT = 62514
-
-CENTER_PORT = 6443
-SERVER_PORT = 5443
-OCTBS_PORT = 4443
-VR_PORT = 3443
-CONSOLEPROXY_PORT = 2443
-
 CONFIG_FILE = PROJECT_PATH + os.sep + "config.json"
 
 
