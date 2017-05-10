@@ -92,7 +92,7 @@ funcList = {
 		}
 	},
 
-	"APIDeleteRobot": {
+	"APIRemoveRobot": {
 		"name": "删除单个机器人",
 		"roles": [ROLE_SUPERADMIN, ROLE_ADMIN],
 		"serviceName": "robot.robot_web.web_del_robot",

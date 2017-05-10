@@ -58,7 +58,7 @@
         httpPost("/api/", bodyStr, function (resJson) {
 
             retData = parseResponse(resJson);
-            if (retData == null) {
+            if (retData === null) {
                 return;
             }
 

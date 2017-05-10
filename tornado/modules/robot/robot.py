@@ -87,7 +87,7 @@ def add_robot(db, env, arg):
 
 	robot.name = robotName
 	robot.phone = paras.get("phoneNumber") or ""
-	robot.uid = paras.get("uid") or ""
+	robot.uId = paras.get("uId") or ""
 	robot.accountId = paras.get("accountId")
 
 	return robot.add()

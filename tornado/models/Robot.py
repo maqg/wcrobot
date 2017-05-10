@@ -61,7 +61,8 @@ class WCRobot:
 		self.db = db
 		self.myId = uid
 		self.name = name
-		self.uid = ""
+		self.uName = ""
+		self.uId = ""
 		self.accountId = DEFAULT_ACCOUNT_ID
 
 		self.dbObj = dbObj
@@ -96,7 +97,8 @@ class WCRobot:
 		self.myId = self.dbObj["ID"]
 		self.name = self.dbObj["R_Name"]
 		self.state = self.dbObj["R_State"]
-		self.uid = self.dbObj["R_UId"]
+		self.uId = self.dbObj["R_UId"]
+		self.uName = self.dbObj["R_UName"]
 		self.stateCN = robotState_d2s(self.state)
 		self.lastLogin = self.dbObj["R_LastLogin"]
 		self.lastSync = self.dbObj["R_LastSync"]
@@ -108,7 +110,7 @@ class WCRobot:
 
 		robotObj = {
 			"R_LastLogin": get_current_time(),
-			"R_UId": self.uid,
+			"R_UId": self.uId,
 		}
 
 		cond = "WHERE ID='%s'" % self.myId
@@ -139,7 +141,7 @@ class WCRobot:
 
 		robotObj = {
 			"ID": getUuid(),
-			"R_UId": self.uid,
+			"R_UId": self.uId,
 			"R_AccountId": self.accountId,
 			"R_Name": self.name,
 			"R_CreateTime": get_current_time(),
@@ -175,7 +177,8 @@ class WCRobot:
 			"name": self.name,
 			"state": self.state,
 			"stateCN": self.stateCN,
-			"uid": self.uid,
+			"uId": self.uId,
+			"uName": self.uName,
 			"lastLogin": howLongAgo(self.lastLogin),
 			"lastSync": getStrTime(self.lastSync),
 			"createTime": getStrTime(self.createTime),
@@ -184,6 +187,7 @@ class WCRobot:
 		return obj
 
 	def toObjBrief(self):
+		
 		return {
 			"id": self.myId,
 			"name": self.name,
