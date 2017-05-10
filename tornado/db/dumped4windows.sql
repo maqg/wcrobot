@@ -54,7 +54,7 @@ CREATE TABLE `tb_account` (
 
 LOCK TABLES `tb_account` WRITE;
 /*!40000 ALTER TABLE `tb_account` DISABLE KEYS */;
-INSERT INTO `tb_account` VALUES ('c9b7c22a0ae911e7af10525400659eb7',1,7,'admin','292f137f691469948acd0e72b141e373','','',0,1494315242000,0,'');
+INSERT INTO `tb_account` VALUES ('c9b7c22a0ae911e7af10525400659eb7',1,7,'admin','292f137f691469948acd0e72b141e373','','',0,1494384276000,0,'');
 /*!40000 ALTER TABLE `tb_account` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -186,9 +186,10 @@ DROP TABLE IF EXISTS `tb_robot`;
 CREATE TABLE `tb_robot` (
   `ID` varchar(36) NOT NULL DEFAULT '',
   `R_AccountId` varchar(128) NOT NULL DEFAULT '',
-  `R_Name` varchar(128) NOT NULL DEFAULT '',
+  `R_Name` varchar(128) NOT NULL DEFAULT '' COMMENT 'Robot Name',
+  `R_UName` varchar(128) NOT NULL DEFAULT '' COMMENT 'WeChat Name',
   `R_UId` varchar(128) NOT NULL DEFAULT '',
-  `R_State` tinyint(4) NOT NULL DEFAULT '0' COMMENT '1: ONLINE, 0: OFFLINE',
+  `R_State` tinyint(4) NOT NULL DEFAULT '0' COMMENT '1: ONLINE, 0: OFFLINE, 2: WAITING_SCAN',
   `R_LastLogin` bigint(20) NOT NULL DEFAULT '0',
   `R_LastSync` bigint(20) NOT NULL DEFAULT '0',
   `R_CreateTime` bigint(20) NOT NULL DEFAULT '0',
@@ -363,4 +364,4 @@ SET character_set_client = @saved_cs_client;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-05-09 15:34:02
+-- Dump completed on 2017-05-10 10:44:36

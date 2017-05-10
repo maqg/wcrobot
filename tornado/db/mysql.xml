@@ -25,6 +25,7 @@
 		<field name='ID' type='VARCHAR(10)' caption=''/>
 		<field name='R_AccountId' type='VARCHAR(10)' caption=''/>
 		<field name='R_Name' type='VARCHAR(10)' caption=''/>
+		<field name='R_UName' type='VARCHAR(10)' caption=''/>
 		<field name='R_UId' type='VARCHAR(10)' caption=''/>
 		<field name='R_State' type='TINYINT' caption=''/>
 		<field name='R_LastLogin' type='BIGINT' caption=''/>
