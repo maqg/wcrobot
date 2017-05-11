@@ -9,17 +9,20 @@ from utils.commonUtil import getUuid
 from utils.timeUtil import get_current_time, howLongAgo, getStrTime
 
 
+ROBOT_STATE_UNKNOWN = 10
+ROBOT_STATE_WAITINGSCAN = 2
 ROBOT_STATE_ONLINE = 1
 ROBOT_STATE_OFFLINE = 0
 
 robot_state_cn = {
 	ROBOT_STATE_OFFLINE: "离线",
-	ROBOT_STATE_ONLINE: "在线"
+	ROBOT_STATE_ONLINE: "在线",
+	ROBOT_STATE_WAITINGSCAN: "等待扫码"
 }
 
 
 def robotState_d2s(state):
-	return robot_state_cn.get(state) or ""
+	return robot_state_cn.get(state) or "未知"
 
 
 def getRobotCount(db, cond=""):
@@ -123,6 +126,7 @@ class WCRobot:
 
 		robotObj = {
 			"R_Name": self.name,
+			"R_UId": self.uId,
 			"R_LastSync": get_current_time(),
 		}
 

@@ -18,7 +18,7 @@ funcList = {
 				"descCN": "机器人名称",
 				"default": "NotNull"
 			},
-			"uid": {
+			"uId": {
 				"type": PARAM_TYPE_STRING,
 				"descCN": "微信ID",
 				"default": ""
@@ -118,7 +118,12 @@ funcList = {
 			"name": {
 				"type": PARAM_TYPE_STRING,
 				"descCN": "机器人名称",
-				"default": ""
+				"default": PARAM_NOT_NULL
+			},
+			"uId": {
+				"type": PARAM_TYPE_STRING,
+				"descCN": "微信Id",
+				"default": PARAM_NOT_NULL
 			}
 		}
 	},

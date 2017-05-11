@@ -105,13 +105,16 @@ def delete_robot(db, arg):
 
 
 def update_robot(db, arg):
-	robot = getRobot(db, arg["paras"].get("id"))
+
+	paras = arg["paras"]
+	robotId = paras["id"]
+
+	robot = getRobot(db, robotId)
 	if (not robot):
-		ERROR("robot %s not exist" % (arg["paras"].get("id")))
+		ERROR("robot %s not exist" % (robotId))
 		return USER_NOT_EXIST
 
-	robot.email = arg["paras"].get("email") or ""
-	robot.phone = arg["paras"].get("phoneNumber") or ""
-	robot.ukey = arg["paras"].get("ukey") or ""
+	robot.uId = paras["uId"]
+	robot.name = paras["name"]
 
 	return robot.update()

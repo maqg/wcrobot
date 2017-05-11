@@ -226,3 +226,15 @@ table#vm-list-tab tbody tr th {
     color: green;
     background-color: #eeeeee;
 }
+
+.robotStateOffline {
+    color: red;
+}
+
+#robotStateOnLine {
+    color: green;
+}
+
+#robotStateWaiting {
+    color: sandybrown;
+}

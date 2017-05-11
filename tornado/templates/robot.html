@@ -134,20 +134,31 @@
 
             var bodyStr = "";
 
-            fileObj = robot["files"][0];
-
             bodyStr += "<table class=\"table table-striped table-hover\">";
             bodyStr += "<tr><th>属性</th><th>内容</th></tr>";
-            bodyStr += "<tr><td>UUID</td><td>" + robot["id"] + "</td></tr>";
-            bodyStr += "<tr><td>镜像名称</td><td>" + robot["robotName"] + "</td></tr>";
-            bodyStr += "<tr><td>媒体类型</td><td>" + robot["mediaType"] + "</td></tr>";
+            bodyStr += "<tr><td>ID</td><td>" + robot["id"] + "</td></tr>";
+            bodyStr += "<tr><td>名称</td><td>" + robot["name"] + "</td></tr>";
+
+            if (robot["state"] === 0) {
+                bodyStr += "<tr><td>状态</td><td style='color: red;'>" + robot["stateCN"] + "</td></tr>";
+            } else if (robot["state"] === 1) {
+                bodyStr += "<tr><td>状态</td><td style='color: green;'>" + robot["stateCN"] + "</td></tr>";
+            } else {
+                bodyStr += "<tr><td>状态</td><td style='color: sandybrown;'>" + robot["stateCN"] + "</td></tr>";
+            }
+            bodyStr += "<tr><td>微信Id</td><td>" + robot["uId"] + "</td></tr>";
+            bodyStr += "<tr><td>微信名称</td><td>" + robot["uName"] + "</td></tr>";
+            bodyStr += "<tr><td>创建时间</td><td>" + robot["createTime"] + "</td></tr>";
+            bodyStr += "<tr><td>修改时间</td><td>" + robot["lastSync"] + "</td></tr>";
+            bodyStr += "<tr><td>上次登录</td><td>" + robot["lastLogin"] + "</td></tr>";
+
 
             $detailBody.html(bodyStr);
 
             // to modify lable
             $lable = $("#modalDetailTitle");
             if ($lable !== null) {
-                $lable.html("机器人详情-" + robot["robotName"]);
+                $lable.html("机器人详情-" + robot["name"]);
             }
 
             $("#modalDetail").modal("show");
@@ -164,16 +175,23 @@
         bodyStr += "<td>" + dataObj["contacts"] + "</td>";
         bodyStr += "<td>" + dataObj["groups"] + "</td>";
         bodyStr += "<td>" + dataObj["messages"] + "</td>";
-        bodyStr += "<td>" + dataObj["stateCN"] + "</td>";
+        if (dataObj["state"] === 0) {
+            bodyStr += "<td style='color: red;'>" + dataObj["stateCN"] + "</td>";
+        } else if (dataObj["state"] === 1) {
+            bodyStr += "<td style='color: green;'>" + dataObj["stateCN"] + "</td>";
+        } else {
+            bodyStr += "<td style='color: sandybrown;'>" + dataObj["stateCN"] + "</td>";
+        }
         bodyStr += "<td>" + dataObj["lastLogin"] + "</td><td>";
 
-        bodyStr += "<button class=\"btn btn-warning detail-button\" onclick=\"funcNotFound('" + dataObj["id"] + "');\" style=\"margin-right: 10px\">编辑</button>";
         if (dataObj["state"] === 0) {
             bodyStr += "<button class=\"btn btn-info detail-button\" onclick=\"robotlogin('" + dataObj["id"] + "');\" style=\"margin-right: 10px\">登录</button>";
+        } else if (dataObj["state"] === 1) {
+            bodyStr += "<button class=\"btn btn-info detail-button\" onclick=\"robotlogut('" + dataObj["id"] + "');\" style=\"margin-right: 10px\">退出</button>";
         } else {
             bodyStr += "<button class=\"btn btn-info detail-button\" onclick=\"robotlogut('" + dataObj["id"] + "');\" style=\"margin-right: 10px\">退出</button>";
         }
-        bodyStr += "<button class=\"btn btn-primary detail-button\" onclick=\"funcNotFound('" + dataObj["id"] + "');\" style=\"margin-right: 10px\">二维码</button>";
+        bodyStr += "<button class=\"btn btn-primary detail-button\" onclick=\"robotqc('" + dataObj["id"] + "');\" style=\"margin-right: 10px\">二维码</button>";
         bodyStr += "<button class=\"btn btn-danger detail-button\" onclick=\"removerobot('" + dataObj["id"] + "');\" style=\"margin-right: 10px\" >删除</button></td></tr>";
 
         $tr = $(bodyStr);
