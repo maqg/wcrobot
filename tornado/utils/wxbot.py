@@ -18,6 +18,8 @@ from traceback import format_exc
 from requests.exceptions import ConnectionError, ReadTimeout
 import html.parser
 
+from conf.config import SystemConf
+
 UNKONWN = 'unkonwn'
 SUCCESS = '200'
 SCANED = '201'
@@ -70,7 +72,8 @@ class SafeSession(requests.Session):
 class WXBot:
 	"""WXBot功能类"""
 
-	def __init__(self):
+	def __init__(self, robotId=""):
+		self.robotId = robotId
 		self.DEBUG = False
 		self.uuid = ''
 		self.base_uri = ''
@@ -94,8 +97,9 @@ class WXBot:
 		self.wxid_list = []  # 获取到的wxid的列表
 		self.cursor = 0  # 拉取联系人信息的游标
 		self.is_big_contact = False  # 通讯录人数过多，无法直接获取
+		
 		# 文件缓存目录
-		self.temp_pwd = os.path.join(os.getcwd(), 'temp')
+		self.temp_pwd = SystemConf.tmpPath + os.sep + self.robotId
 		if os.path.exists(self.temp_pwd) == False:
 			os.makedirs(self.temp_pwd)
 
@@ -1161,6 +1165,17 @@ class WXBot:
 			if pm:
 				return pm.group(1)
 		return 'unknown'
+	
+	
+	def get_qr_path(self):
+		try:
+			self.get_uuid()
+			path = self.gen_qr_code(os.path.join(self.temp_pwd, 'wxqr.png'))
+			return path
+		except Exception as e:
+			print(('[ERROR] Web WeChat run failed --> %s' % (e)))
+			return None
+			
 
 	def run(self):
 		try:
@@ -1219,16 +1234,17 @@ class WXBot:
 			return code == '200'
 		return False
 
-	def gen_qr_code(self, qr_file_path):
+	def gen_qr_code(self, qr_file_path, display_now=False):
 		string = 'https://login.weixin.qq.com/l/' + self.uuid
 		qr = pyqrcode.create(string)
 		if self.conf['qr'] == 'png':
 			qr.png(qr_file_path, scale=8)
-			show_image(qr_file_path)
-			# img = Image.open(qr_file_path)
-			# img.show()
+			if display_now:
+				show_image(qr_file_path)
 		elif self.conf['qr'] == 'tty':
-			print((qr.terminal(quiet_zone=1)))
+			if display_now:
+				print((qr.terminal(quiet_zone=1)))
+		return qr_file_path
 
 	def do_request(self, url):
 		r = self.session.get(url)

@@ -187,7 +187,7 @@
         if (dataObj["state"] === 0) {
             bodyStr += "<button class=\"btn btn-info detail-button\" onclick=\"robotlogin('" + dataObj["id"] + "');\" style=\"margin-right: 10px\">登录</button>";
         } else if (dataObj["state"] === 1) {
-            bodyStr += "<button class=\"btn btn-info detail-button\" onclick=\"robotlogut('" + dataObj["id"] + "');\" style=\"margin-right: 10px\">退出</button>";
+            bodyStr += "<button class=\"btn btn-info detail-button\" onclick=\"robotlogout('" + dataObj["id"] + "');\" style=\"margin-right: 10px\">退出</button>";
         } else {
             bodyStr += "<button class=\"btn btn-info detail-button\" onclick=\"robotlogut('" + dataObj["id"] + "');\" style=\"margin-right: 10px\">退出</button>";
         }
@@ -253,6 +253,29 @@
 
     function removerobot(fileName) {
         raiseRemoveModal(fileName, "您确认删除此机器人吗？");
+    }
+
+    function robotlogin(robotId) {
+        json = {
+            "api": "octlink.wcrobot.v1.robot.APILogin",
+            "paras": {
+                "timeout": 0,
+                "id": robotId
+            },
+            "session": {
+                "uuid": "00000000000000000000000000000000",
+                "skey": "00000000000000000000000000000000"
+            },
+            "async": false
+        };
+
+        bodyStr = JSON.stringify(json);
+
+        httpPost("/api/", bodyStr, function (resJson) {
+            $("#modalAddRobot").modal("hide");
+            console.log(resJson);
+
+        });
     }
 
     function raiseAddModal() {

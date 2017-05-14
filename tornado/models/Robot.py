@@ -1,13 +1,16 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+import _thread
+import time
+
 from conf.dbconfig import TB_ROBOT
 from core.err_code import DB_ERR, OCT_SUCCESS, NOT_ENOUGH_PARAS
 from core.log import DEBUG, ERROR, WARNING
 from models.Common import DEFAULT_ACCOUNT_ID
 from utils.commonUtil import getUuid
 from utils.timeUtil import get_current_time, howLongAgo, getStrTime
-
+from utils.wxbot import WXBot
 
 ROBOT_STATE_UNKNOWN = 10
 ROBOT_STATE_WAITINGSCAN = 2
@@ -57,6 +60,19 @@ def getRobot(db, id):
 	return getRobot_byCond(db, robotId=id)
 
 
+class MyWXBot(WXBot):
+	
+	def handle_msg_all(self, msg):
+		if msg['msg_type_id'] == 4 and msg['content']['type'] == 0:
+			self.send_msg_by_uid(u'hi', msg['user']['id'])
+			
+			
+def runNewRobot(robot, bot, delay):
+	
+	time.sleep(delay)
+	bot.run()
+
+
 class WCRobot:
 
 	def __init__(self, db=None, uid=None, name=None, dbObj=None):
@@ -77,6 +93,10 @@ class WCRobot:
 		self.lastLogin = 0
 		self.lastSync = 0
 		self.createTime = 0
+		
+		self.contacts = 0
+		self.groups = 0
+		self.messages = 0
 
 	def init(self):
 
@@ -139,7 +159,15 @@ class WCRobot:
 		return 0
 
 	def login(self):
-		pass
+		
+		bot = MyWXBot(robotId=self.myId)
+		bot.DEBUG = True
+		bot.conf['qr'] = 'png'
+		path = bot.get_qr_path()
+		
+		_thread.start_new_thread(runNewRobot, (self, bot, 1))
+		
+		return OCT_SUCCESS, path
 
 	def add(self):
 
@@ -183,9 +211,13 @@ class WCRobot:
 			"stateCN": self.stateCN,
 			"uId": self.uId,
 			"uName": self.uName,
-			"lastLogin": howLongAgo(self.lastLogin),
-			"lastSync": getStrTime(self.lastSync),
+			"lastLogin": howLongAgo(self.lastLogin) or "从未登录",
+			"lastSync": getStrTime(self.lastSync) or "未修改",
 			"createTime": getStrTime(self.createTime),
+			
+			"contacts": self.contacts,
+			"groups": self.groups,
+			"messages": self.messages
 		}
 
 		return obj

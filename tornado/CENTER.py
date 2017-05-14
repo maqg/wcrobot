@@ -10,7 +10,7 @@ from core import dbmysql
 from core.err_code import NO_AUTH_SKEY, UNACCP_PARAS, SYSCALL_ERR
 from core.log import ERROR, DEBUG, INFO
 from models.Common import DEFAULT_ACCOUNT_ID
-from utils.commonUtil import getUuid
+from utils.commonUtil import getUuid, isSystemWindows
 from utils.httpUtil import buildReply, getArgObj, buildFailureReply, appendBaseArg
 from utils.sessionUtil import getSession
 from views.api.dispatch import doDispatching, IGNORE_SESSION_APIS

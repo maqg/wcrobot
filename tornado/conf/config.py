@@ -41,6 +41,7 @@ class SystemConf():
 	inited = False
 	debugLevel = LVL_WARN
 	system = "wcrobot"
+	tmpPath = TMP_FILE_PATH
 
 	def __init__(self, debugLevel=None):
 
@@ -54,5 +55,6 @@ class SystemConf():
 		return {
 			"version": SystemConf.version,
 			"system": SystemConf.system,
-			"debugLevel": SystemConf.debugLevel
+			"debugLevel": SystemConf.debugLevel,
+			"tmpPath": SystemConf.tmpPath
 		}
