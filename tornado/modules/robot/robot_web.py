@@ -37,7 +37,8 @@ def web_login(db, env, arg):
 
 
 def web_logout(db, env, arg):
-	return buildRetObj(OCT_SUCCESS)
+	ret, data = robotService.logout_robot(db, arg)
+	return buildRetObj(ret, data)
 
 
 def web_update_robot(db, env, arg):

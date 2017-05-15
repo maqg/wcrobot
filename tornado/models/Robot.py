@@ -4,6 +4,7 @@
 import _thread
 import time
 
+from conf.config import SystemConf
 from conf.dbconfig import TB_ROBOT
 from core.err_code import DB_ERR, OCT_SUCCESS, NOT_ENOUGH_PARAS
 from core.log import DEBUG, ERROR, WARNING
@@ -71,6 +72,8 @@ def runNewRobot(robot, bot, delay):
 	
 	time.sleep(delay)
 	bot.run()
+
+	SystemConf.robots[bot.robotId] = bot
 
 
 class WCRobot:
@@ -158,16 +161,57 @@ class WCRobot:
 
 		return 0
 
+	def updateState(self):
+
+		robotObj = {
+			"R_State": self.state,
+			"R_LastSync": get_current_time(),
+		}
+
+		cond = "WHERE ID='%s'" % self.myId
+		ret = self.db.update(TB_ROBOT, robotObj, cond=cond)
+		if (ret == -1):
+			WARNING("update robot %s error for db operation" % self.name)
+			return DB_ERR
+
+		return 0
+
+
 	def login(self):
 		
 		bot = MyWXBot(robotId=self.myId)
 		bot.DEBUG = True
 		bot.conf['qr'] = 'png'
 		path = bot.get_qr_path()
+
+		self.state = ROBOT_STATE_WAITINGSCAN
 		
 		_thread.start_new_thread(runNewRobot, (self, bot, 1))
+
+		self.updateState()
 		
 		return OCT_SUCCESS, path
+
+
+	def logout(self):
+
+		if self.state == ROBOT_STATE_OFFLINE:
+			WARNING("robot %s already logout" % self.myId)
+			return OCT_SUCCESS, None
+
+		if self.state == ROBOT_STATE_WAITINGSCAN or self.state == ROBOT_STATE_ONLINE:
+			rob = SystemConf.robots.get(self.myId)
+			if not rob:
+				ERROR("rob thread %s not running" % self.myId)
+			else:
+				DEBUG("rob %s is gone to stop" % self.myId)
+				rob.running_state = False
+
+		self.state = ROBOT_STATE_OFFLINE
+		self.updateState()
+
+		return OCT_SUCCESS, None
+
 
 	def add(self):
 

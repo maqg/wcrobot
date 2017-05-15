@@ -116,6 +116,18 @@ def login_robot(db, arg):
 	return robot.login()
 
 
+def logout_robot(db, arg):
+	paras = arg["paras"]
+
+	robotId = paras["id"]
+	robot = getRobot(db, robotId)
+	if not robot:
+		ERROR("robot of %s not exist" % robotId)
+		return USER_NOT_EXIST
+
+	return robot.logout()
+
+
 def update_robot(db, arg):
 
 	paras = arg["paras"]

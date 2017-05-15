@@ -189,7 +189,7 @@
         } else if (dataObj["state"] === 1) {
             bodyStr += "<button class=\"btn btn-info detail-button\" onclick=\"robotlogout('" + dataObj["id"] + "');\" style=\"margin-right: 10px\">退出</button>";
         } else {
-            bodyStr += "<button class=\"btn btn-info detail-button\" onclick=\"robotlogut('" + dataObj["id"] + "');\" style=\"margin-right: 10px\">退出</button>";
+            bodyStr += "<button class=\"btn btn-info detail-button\" onclick=\"robotlogout('" + dataObj["id"] + "');\" style=\"margin-right: 10px\">中止</button>";
         }
         bodyStr += "<button class=\"btn btn-primary detail-button\" onclick=\"robotqc('" + dataObj["id"] + "');\" style=\"margin-right: 10px\">二维码</button>";
         bodyStr += "<button class=\"btn btn-danger detail-button\" onclick=\"removerobot('" + dataObj["id"] + "');\" style=\"margin-right: 10px\" >删除</button></td></tr>";
@@ -272,8 +272,38 @@
         bodyStr = JSON.stringify(json);
 
         httpPost("/api/", bodyStr, function (resJson) {
+
             $("#modalAddRobot").modal("hide");
             console.log(resJson);
+
+            updateRobotList("");
+
+        });
+    }
+
+
+
+    function robotlogout(robotId) {
+        json = {
+            "api": "octlink.wcrobot.v1.robot.APILogOut",
+            "paras": {
+                "timeout": 0,
+                "id": robotId
+            },
+            "session": {
+                "uuid": "00000000000000000000000000000000",
+                "skey": "00000000000000000000000000000000"
+            },
+            "async": false
+        };
+
+        bodyStr = JSON.stringify(json);
+
+        httpPost("/api/", bodyStr, function (resJson) {
+            $("#modalAddRobot").modal("hide");
+            console.log(resJson);
+
+            updateRobotList("");
 
         });
     }

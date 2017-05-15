@@ -73,6 +73,9 @@ class WXBot:
 	"""WXBot功能类"""
 
 	def __init__(self, robotId=""):
+
+		self.running_state = False
+
 		self.robotId = robotId
 		self.DEBUG = False
 		self.uuid = ''
@@ -754,9 +757,13 @@ class WXBot:
 		pass
 
 	def proc_msg(self):
+
+		self.running_state = True
+
 		self.test_sync_check()
 		self.status = 'loginsuccess'  # WxbotManage使用
-		while True:
+
+		while self.running_state:
 			if self.status == 'wait4loginout':  # WxbotManage使用
 				return
 			check_time = time.time()
@@ -1207,11 +1214,12 @@ class WXBot:
 			if self.get_contact():
 				print(('[INFO] Get %d contacts' % len(self.contact_list)))
 				print('[INFO] Start to process messages .')
-			print('[INFO] Start to get contacts 1.')
+
 			self.proc_msg()
-			print("fff 2")
 			self.status = 'loginout'
+
 		except Exception as e:
+
 			print(('[ERROR] Web WeChat run failed --> %s' % (e)))
 			self.status = 'loginout'
 
@@ -1269,10 +1277,10 @@ class WXBot:
 		try_later_secs = 1
 		MAX_RETRY_TIMES = 10
 
-		code = UNKONWN
+		code = TIMEOUT
 
 		retry_time = MAX_RETRY_TIMES
-		while retry_time > 0:
+		while retry_time > 0 and self.running_state:
 			url = LOGIN_TEMPLATE % (tip, self.uuid, int(time.time()))
 			code, data = self.do_request(url)
 			if code == SCANED:

@@ -43,6 +43,8 @@ class SystemConf():
 	system = "wcrobot"
 	tmpPath = TMP_FILE_PATH
 
+	robots = {}
+
 	def __init__(self, debugLevel=None):
 
 		config = fileToObj(CONFIG_FILE)
