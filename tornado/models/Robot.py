@@ -68,12 +68,12 @@ class MyWXBot(WXBot):
 			self.send_msg_by_uid(u'hi', msg['user']['id'])
 			
 			
-def runNewRobot(robot, bot, delay):
-	
+def runNewRobot(bot, delay):
+
 	time.sleep(delay)
-	bot.run()
 
 	SystemConf.robots[bot.robotId] = bot
+	bot.run()
 
 
 class WCRobot:
@@ -182,11 +182,12 @@ class WCRobot:
 		bot = MyWXBot(robotId=self.myId)
 		bot.DEBUG = True
 		bot.conf['qr'] = 'png'
+		bot.running_state = True
 		path = bot.get_qr_path()
 
 		self.state = ROBOT_STATE_WAITINGSCAN
 		
-		_thread.start_new_thread(runNewRobot, (self, bot, 1))
+		_thread.start_new_thread(runNewRobot, (bot, 1))
 
 		self.updateState()
 		
@@ -199,6 +200,8 @@ class WCRobot:
 			WARNING("robot %s already logout" % self.myId)
 			return OCT_SUCCESS, None
 
+		DEBUG(SystemConf.robots)
+
 		if self.state == ROBOT_STATE_WAITINGSCAN or self.state == ROBOT_STATE_ONLINE:
 			rob = SystemConf.robots.get(self.myId)
 			if not rob:
@@ -206,6 +209,7 @@ class WCRobot:
 			else:
 				DEBUG("rob %s is gone to stop" % self.myId)
 				rob.running_state = False
+				del SystemConf.robots[self.myId]
 
 		self.state = ROBOT_STATE_OFFLINE
 		self.updateState()

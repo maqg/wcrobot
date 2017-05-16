@@ -59,6 +59,7 @@ class Application(tornado.web.Application):
 			(r"/api/", ApiHandler),
 			(r"/api/test/", ApiTestHandler),
 			(r"/files/upload/", FileUploadHandler),
+			(r"/config/(.*)", tornado.web.StaticFileHandler, {"path": SystemConf.tmpPath}),
 		]
 		settings = dict(
 			cookie_secret="61oETzKXQAGaYdkL5gEmGeJJFuYh7EQnp2XdTP1o/Vo=",

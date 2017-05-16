@@ -758,8 +758,6 @@ class WXBot:
 
 	def proc_msg(self):
 
-		self.running_state = True
-
 		self.test_sync_check()
 		self.status = 'loginsuccess'  # WxbotManage使用
 
@@ -1277,7 +1275,7 @@ class WXBot:
 		try_later_secs = 1
 		MAX_RETRY_TIMES = 10
 
-		code = TIMEOUT
+		code = UNKONWN
 
 		retry_time = MAX_RETRY_TIMES
 		while retry_time > 0 and self.running_state:
