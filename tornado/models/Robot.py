@@ -101,6 +101,8 @@ class WCRobot:
 		self.groups = 0
 		self.messages = 0
 
+		self.robot = None
+
 	def init(self):
 
 		if (self.myId != 0):
@@ -113,7 +115,6 @@ class WCRobot:
 			return -1
 
 		self.dbObj = dbObj
-
 		self.loadFromObj()
 
 		return 0
@@ -129,6 +130,8 @@ class WCRobot:
 		self.lastLogin = self.dbObj["R_LastLogin"]
 		self.lastSync = self.dbObj["R_LastSync"]
 		self.createTime = self.dbObj["R_CreateTime"]
+
+		self.robot = SystemConf.robots.get(self.myId) or None
 
 		return 0
 
@@ -186,6 +189,8 @@ class WCRobot:
 		path = bot.get_qr_path()
 
 		self.state = ROBOT_STATE_WAITINGSCAN
+
+		self.robot = bot
 		
 		_thread.start_new_thread(runNewRobot, (bot, 1))
 
@@ -265,8 +270,13 @@ class WCRobot:
 			
 			"contacts": self.contacts,
 			"groups": self.groups,
-			"messages": self.messages
+			"messages": self.messages,
 		}
+
+		if self.robot:
+			obj["contactList"] = self.robot.contact_list
+		else:
+			obj["contactList"] = []
 
 		return obj
 
