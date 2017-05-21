@@ -18,6 +18,10 @@ body {
     height: 50px;
 }
 
+#myheader p {
+    color: #eeeeee;
+}
+
 section {
     overflow: auto;
 }
