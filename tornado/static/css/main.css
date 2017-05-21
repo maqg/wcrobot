@@ -10,21 +10,12 @@ html {
 body {
     background-color: white;
     height: inherit;
-    padding-top: 60px;
 }
 
-header {
+#myheader {
     background-color: #265a88;
-    left: 0;
-    right: 0;
-    top: 0;
-    height: 55px;
-}
-
-.attr {
-    background-color: #eeeeee;
-    color: black;
-    border: 1px solid #0066bb;
+    margin: 0 auto;
+    height: 50px;
 }
 
 section {
@@ -40,21 +31,27 @@ p {
     line-height: 1.7em;
 }
 
-.container {
-    width: 85%;
+#mybody {
+    background-color: #eeeeee;
+    margin: 0 auto;
+    width: 80%;
 }
 
 tr td {
     vertical-align: middle !important;
 }
 
-footer {
-    margin-top: 45px;
-    padding-top: 5px;
-    border-top: 1px solid #eaeaea;
+#myfooter {
+    background-color: white;
+    margin: 0 auto;
+    width: 80%;
+    height: 30px;
+    padding-top: 20px;
     color: #777777;
 }
 
-footer a {
+#myfooter p {
     color: gray;
+    font-size: 0.5em;
+    line-height: 1.6em;
 }
