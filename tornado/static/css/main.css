@@ -13,9 +13,12 @@ body {
 }
 
 #myheader {
-    background-color: #265a88;
     margin: 0 auto;
     height: 50px;
+}
+
+#mybody h2 {
+    color: #333333;
 }
 
 #myheader p {
@@ -36,7 +39,8 @@ p {
 }
 
 #mybody {
-    background-color: #eeeeee;
+    padding-top: 20px;
+    background-color: white;
     margin: 0 auto;
     width: 80%;
 }
@@ -52,10 +56,26 @@ tr td {
     height: 30px;
     padding-top: 20px;
     color: #777777;
+    clear: both;
 }
 
 #myfooter p {
     color: gray;
     font-size: 0.5em;
     line-height: 1.6em;
+}
+
+#errorPrompt {
+    margin: 0 auto;
+    width: 400px;
+}
+
+.left-dashboard {
+    height: 400px;
+    float: left;
+}
+
+.right-dashboard {
+    height: 400px;
+    float: right;
 }
