@@ -72,10 +72,37 @@ tr td {
 
 .left-dashboard {
     height: 400px;
+    width: 33.33%;
     float: left;
+    background-color: #2aabd2;
 }
 
 .right-dashboard {
     height: 400px;
-    float: right;
+    float: left;
+    width: 33.33%;
+    background-color: #3c763d;
+}
+
+.middle-dashboard {
+    height: 400px;
+    width: 33.33%;
+    float: left;
+    background-color: #3c3c3c;
+}
+
+.left-dashboard img {
+    height: 300px;
+    width: 100%
+}
+
+.middle-dashboard img {
+    height: 300px;
+    width: 100%
+}
+
+.right-dashboard img {
+    height: 300px;
+    width: 80%;
+    margin: auto 10px;
 }
