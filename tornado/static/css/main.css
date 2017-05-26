@@ -42,7 +42,7 @@ p {
     padding-top: 20px;
     background-color: white;
     margin: 0 auto;
-    width: 80%;
+    width: 65%;
 }
 
 tr td {
@@ -52,7 +52,7 @@ tr td {
 #myfooter {
     background-color: white;
     margin: 0 auto;
-    width: 80%;
+    width: 65%;
     height: 30px;
     padding-top: 20px;
     color: #777777;
@@ -71,38 +71,43 @@ tr td {
 }
 
 .left-dashboard {
-    height: 400px;
-    width: 33.33%;
+    height: 300px;
+    width: 31%;
     float: left;
+    padding: 20px;
+    margin: 1%;
     background-color: #2aabd2;
 }
 
 .right-dashboard {
-    height: 400px;
+    height: 300px;
     float: left;
-    width: 33.33%;
+    width: 31%;
+    padding: 20px;
+    margin: 1%;
     background-color: #3c763d;
 }
 
 .middle-dashboard {
-    height: 400px;
-    width: 33.33%;
+    height: 300px;
+    width: 31%;
+    padding: 20px;
+    margin: 1%;
     float: left;
     background-color: #3c3c3c;
 }
 
 .left-dashboard img {
-    height: 300px;
+    height: 200px;
     width: 100%
 }
 
 .middle-dashboard img {
-    height: 300px;
+    height: 200px;
     width: 100%
 }
 
 .right-dashboard img {
-    height: 300px;
-    width: 80%;
-    margin: auto 10px;
+    height: 200px;
+    width: 100%;
 }
