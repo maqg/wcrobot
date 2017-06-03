@@ -55,17 +55,11 @@ def loginit(trace):
 	trace_len = len(trace)
 	trace = trace[trace_len - 2][:2]
 	
-	system = SystemConf.system
-	if (system == "center"):
-		log_suffix = ".log"
-	else:
-		log_suffix = "_server.log"
-	
 	sysstr = platform.system()
 	if (sysstr == "Windows"):
-		file_name = LOG_FILE_PATH + ((trace[0].split('\\'))[-1]).split("/")[-1].split(".")[0] + log_suffix
+		file_name = LOG_FILE_PATH + ((trace[0].split('\\'))[-1]).split("/")[-1].split(".")[0] + ".log"
 	else:
-		file_name = LOG_FILE_PATH + ((trace[0].split('/'))[-1]).split("/")[-1].split(".")[0] + log_suffix
+		file_name = LOG_FILE_PATH + ((trace[0].split('/'))[-1]).split("/")[-1].split(".")[0] + ".log"
 	create_file(file_name)
 	
 	logger = logging.getLogger()
