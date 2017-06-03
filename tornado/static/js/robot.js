@@ -97,6 +97,19 @@ function raiseDetail(robot) {
     }
 }
 
+function raisePicture(robotId) {
+
+    $pictureBody = $("#modalPictureBody");
+
+    var bodyStr = "";
+
+    bodyStr += "<img src='/config/" + robotId + "/wxqr.png' alt='打开微信扫描'/>";
+
+    $pictureBody.html(bodyStr);
+
+    $("#modalPicture").modal("show");
+}
+
 function printrobot(dataObj) {
 
     bodyStr = "<tr><td>" + dataObj["name"] + "</td>";
@@ -204,6 +217,8 @@ function robotlogin(robotId) {
         console.log(resJson);
 
         updateRobotList(getKeyword());
+
+        raisePicture(robotId);
     });
 }
 

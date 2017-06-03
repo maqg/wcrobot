@@ -37,11 +37,21 @@ TEMPLATE_NOT_FOUND = "pagenotfound.html"
 TEMPLATE_ROBOT = "robot.html"
 TEMPLATE_DASHBOARD = "dashboard.html"
 TEMPLATE_CONFIG = "config.html"
+TEMPLATE_CONTACT = "contact.html"
+TEMPLATE_GPOUP = "group.html"
+TEMPLATE_GPOUP_MEMBER = "group_member.html"
+TEMPLATE_GPOUP_MESSAGE = "group_message.html"
+TEMPLATE_MESSAGE = "message.html"
 
 TEMPLATE_LIST = {
 	"index": TEMPLATE_DASHBOARD,
 	"robot": TEMPLATE_ROBOT,
 	"config": TEMPLATE_CONFIG,
+	"contact": TEMPLATE_CONTACT,
+	"group": TEMPLATE_GPOUP,
+	"group_member": TEMPLATE_GPOUP_MEMBER,
+	"message": TEMPLATE_MESSAGE,
+	"group_message": TEMPLATE_GPOUP_MESSAGE,
 }
 
 
