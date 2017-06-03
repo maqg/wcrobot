@@ -3,6 +3,10 @@
     margin: 0;
 }
 
+.basic {
+    background-color: #265a88
+}
+
 html {
     height: 100%;
 }
