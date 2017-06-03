@@ -115,14 +115,14 @@ function printrobot(dataObj) {
     bodyStr += "<td>" + dataObj["lastLogin"] + "</td><td>";
 
     if (dataObj["state"] === 0) {
-        bodyStr += "<button class=\"btn btn-info detail-button\" onclick=\"robotlogin('" + dataObj["id"] + "');\" style=\"margin-right: 10px\">登录</button>";
+        bodyStr += "<div class=\"robotbutton\" onclick=\"robotlogin('" + dataObj["id"] + "');\" style=\"margin-right: 10px\"><img src='/static/imgs/button_login.png'></div>";
     } else if (dataObj["state"] === 1) {
-        bodyStr += "<button class=\"btn btn-info detail-button\" onclick=\"robotlogout('" + dataObj["id"] + "');\" style=\"margin-right: 10px\">退出</button>";
+        bodyStr += "<div class=\"robotbutton\" onclick=\"robotlogout('" + dataObj["id"] + "');\" style=\"margin-right: 10px\"><img src='/static/imgs/button_logout.png'></div>";
     } else {
-        bodyStr += "<button class=\"btn btn-info detail-button\" onclick=\"robotlogout('" + dataObj["id"] + "');\" style=\"margin-right: 10px\">中止</button>";
+        bodyStr += "<div class=\"robotbutton\" onclick=\"robotlogout('" + dataObj["id"] + "');\" style=\"margin-right: 10px\"><img src='/static/imgs/button_stop.png'></div>";
     }
-    bodyStr += "<button class=\"btn btn-primary detail-button\" onclick=\"robotqc('" + dataObj["id"] + "');\" style=\"margin-right: 10px\">二维码</button>";
-    bodyStr += "<button class=\"btn btn-danger detail-button\" onclick=\"removerobot('" + dataObj["id"] + "');\" style=\"margin-right: 10px\" >删除</button></td></tr>";
+    bodyStr += "<div class=\"robotbutton\" onclick=\"robotqc('" + dataObj["id"] + "');\" style=\"margin-right: 10px\"><img src='/static/imgs/button_qrcode.png'></div>";
+    bodyStr += "<div class=\"robotbutton\" onclick=\"removerobot('" + dataObj["id"] + "');\" style=\"margin-right: 10px\" ><img src='/static/imgs/button_delete.png'></div></td></tr>";
 
     $tr = $(bodyStr);
 

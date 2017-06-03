@@ -112,3 +112,18 @@ tr td {
     height: 200px;
     width: 100%;
 }
+
+.robotbutton {
+    height: 32px;
+    width: 32px;
+    float: left;
+}
+
+.robotbutton img {
+    margin: 2px;
+}
+
+.robotbutton:hover {
+    background-color: #9acfea;
+    opacity: 95;
+}
