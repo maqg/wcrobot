@@ -51,7 +51,7 @@ CREATE TABLE `tb_robot` (
 		`R_LastLogin` BIGINT NOT NULL DEFAULT '0',
 		`R_LastSync` BIGINT NOT NULL DEFAULT '0',
 		`R_CreateTime` BIGINT NOT NULL DEFAULT '0',
-		`U_Description` VARCHAR(1024) NOT NULL DEFAULT '',
+		`R_Description` VARCHAR(1024) NOT NULL DEFAULT '',
 		PRIMARY KEY (`ID`)
 ) ENGINE=Innodb DEFAULT CHARSET=utf8;
 ALTER TABLE tb_robot ADD INDEX tb_robot_id (ID);
@@ -62,6 +62,34 @@ ALTER TABLE tb_robot ADD INDEX tb_robot_name (R_Name);
 ALTER TABLE tb_robot ADD INDEX tb_robot_createtime (R_CreateTime);
 ALTER TABLE tb_robot ADD INDEX tb_robot_lastlogin (R_LastLogin);
 ALTER TABLE tb_robot ADD INDEX tb_robot_lastsync (R_LastSync);
+
+
+DROP TABLE IF EXISTS `tb_contact`;
+CREATE TABLE `tb_contact` (
+		`ID` VARCHAR(36) NOT NULL DEFAULT '',
+		`C_RobotId` VARCHAR(36) NOT NULL DEFAULT '',
+ 		`C_UserName` VARCHAR(128) NOT NULL DEFAULT '',
+ 		`C_HeadImgUrl` VARCHAR(1024) NOT NULL DEFAULT '',
+ 		`C_ContactFlag` TINYINT NOT NULL DEFAULT '3' COMMENT '3: common,',
+		`C_NickName` VARCHAR(128) NOT NULL DEFAULT '',
+		`C_Alias` VARCHAR(128) NOT NULL DEFAULT '',
+		`C_Signature` VARCHAR(256) NOT NULL DEFAULT '' COMMENT '',
+		`C_Province` VARCHAR(32) NOT NULL DEFAULT '' COMMENT '',
+		`C_City` VARCHAR(32) NOT NULL DEFAULT '',
+		`C_Raw` VARCHAR(4096) NOT NULL DEFAULT '{}',
+		`C_Sex` TINYINT NOT NULL DEFAULT '0' COMMENT '1: Male, 2: Female, 0: Unknown',
+		`C_LastSync` BIGINT NOT NULL DEFAULT '0',
+		`C_CreateTime` BIGINT NOT NULL DEFAULT '0',
+		PRIMARY KEY (`ID`)
+) ENGINE=Innodb DEFAULT CHARSET=utf8;
+ALTER TABLE tb_contact ADD INDEX tb_robot_id (ID);
+ALTER TABLE tb_contact ADD INDEX tb_contact_robotid (C_RobotId);
+ALTER TABLE tb_contact ADD INDEX tb_contact_username (C_UserName);
+ALTER TABLE tb_contact ADD INDEX tb_contact_sex (C_Sex);
+ALTER TABLE tb_contact ADD INDEX tb_contact_createtime (C_CreateTime);
+ALTER TABLE tb_contact ADD INDEX tb_contact_lastsync (C_LastSync);
+
+
 
 DROP TABLE IF EXISTS `tb_session`;
 CREATE TABLE `tb_session` (
