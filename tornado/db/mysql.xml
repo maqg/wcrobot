@@ -31,7 +31,23 @@
 		<field name='R_LastLogin' type='BIGINT' caption=''/>
 		<field name='R_LastSync' type='BIGINT' caption=''/>
 		<field name='R_CreateTime' type='BIGINT' caption=''/>
-		<field name='U_Description' type='VARCHAR(10)' caption=''/>
+		<field name='R_Description' type='VARCHAR(10)' caption=''/>
+	</file>
+	<file index="1" name="tb_contact" caption="">
+		<field name='ID' type='VARCHAR(10)' caption=''/>
+		<field name='C_RobotId' type='VARCHAR(10)' caption=''/>
+		<field name='C_UserName' type='VARCHAR(10)' caption=''/>
+		<field name='C_HeadImgUrl' type='VARCHAR(10)' caption=''/>
+		<field name='C_ContactFlag' type='TINYINT' caption=''/>
+		<field name='C_NickName' type='VARCHAR(10)' caption=''/>
+		<field name='C_Alias' type='VARCHAR(10)' caption=''/>
+		<field name='C_Signature' type='VARCHAR(10)' caption=''/>
+		<field name='C_Province' type='VARCHAR(10)' caption=''/>
+		<field name='C_City' type='VARCHAR(10)' caption=''/>
+		<field name='C_Raw' type='VARCHAR(10)' caption=''/>
+		<field name='C_Sex' type='TINYINT' caption=''/>
+		<field name='C_LastSync' type='BIGINT' caption=''/>
+		<field name='C_CreateTime' type='BIGINT' caption=''/>
 	</file>
 	<file index="1" name="tb_session" caption="">
 		<field name='ID' type='VARCHAR(10)' caption=''/>

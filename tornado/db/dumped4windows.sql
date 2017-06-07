@@ -54,7 +54,7 @@ CREATE TABLE `tb_account` (
 
 LOCK TABLES `tb_account` WRITE;
 /*!40000 ALTER TABLE `tb_account` DISABLE KEYS */;
-INSERT INTO `tb_account` VALUES ('c9b7c22a0ae911e7af10525400659eb7',1,7,'admin','292f137f691469948acd0e72b141e373','','',0,1494384276000,0,'');
+INSERT INTO `tb_account` VALUES ('c9b7c22a0ae911e7af10525400659eb7',1,7,'admin','292f137f691469948acd0e72b141e373','','',0,1496817719000,0,'');
 /*!40000 ALTER TABLE `tb_account` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -115,6 +115,47 @@ CREATE TABLE `tb_apitrace` (
 LOCK TABLES `tb_apitrace` WRITE;
 /*!40000 ALTER TABLE `tb_apitrace` DISABLE KEYS */;
 /*!40000 ALTER TABLE `tb_apitrace` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `tb_contact`
+--
+
+DROP TABLE IF EXISTS `tb_contact`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tb_contact` (
+  `ID` varchar(36) NOT NULL DEFAULT '',
+  `C_RobotId` varchar(36) NOT NULL DEFAULT '',
+  `C_UserName` varchar(128) NOT NULL DEFAULT '',
+  `C_HeadImgUrl` varchar(1024) NOT NULL DEFAULT '',
+  `C_ContactFlag` tinyint(4) NOT NULL DEFAULT '3' COMMENT '3: common,',
+  `C_NickName` varchar(128) NOT NULL DEFAULT '',
+  `C_Alias` varchar(128) NOT NULL DEFAULT '',
+  `C_Signature` varchar(256) NOT NULL DEFAULT '',
+  `C_Province` varchar(32) NOT NULL DEFAULT '',
+  `C_City` varchar(32) NOT NULL DEFAULT '',
+  `C_Raw` varchar(4096) NOT NULL DEFAULT '{}',
+  `C_Sex` tinyint(4) NOT NULL DEFAULT '0' COMMENT '1: Male, 2: Female, 0: Unknown',
+  `C_LastSync` bigint(20) NOT NULL DEFAULT '0',
+  `C_CreateTime` bigint(20) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`ID`),
+  KEY `tb_robot_id` (`ID`),
+  KEY `tb_contact_robotid` (`C_RobotId`),
+  KEY `tb_contact_username` (`C_UserName`),
+  KEY `tb_contact_sex` (`C_Sex`),
+  KEY `tb_contact_createtime` (`C_CreateTime`),
+  KEY `tb_contact_lastsync` (`C_LastSync`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tb_contact`
+--
+
+LOCK TABLES `tb_contact` WRITE;
+/*!40000 ALTER TABLE `tb_contact` DISABLE KEYS */;
+/*!40000 ALTER TABLE `tb_contact` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -193,7 +234,7 @@ CREATE TABLE `tb_robot` (
   `R_LastLogin` bigint(20) NOT NULL DEFAULT '0',
   `R_LastSync` bigint(20) NOT NULL DEFAULT '0',
   `R_CreateTime` bigint(20) NOT NULL DEFAULT '0',
-  `U_Description` varchar(1024) NOT NULL DEFAULT '',
+  `R_Description` varchar(1024) NOT NULL DEFAULT '',
   PRIMARY KEY (`ID`),
   KEY `tb_robot_id` (`ID`),
   KEY `tb_robot_uid` (`R_UId`),
@@ -364,4 +405,4 @@ SET character_set_client = @saved_cs_client;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-05-10 10:44:36
+-- Dump completed on 2017-06-07 14:41:59
