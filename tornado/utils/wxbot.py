@@ -1207,6 +1207,13 @@ class WXBot:
 				print('[INFO] Web WeChat init failed')
 				self.status = 'loginout'
 				return
+
+			try:
+				self.login_succeed_callback()
+			except Exception as e:
+				print "[ERROR] run:login_succeed_callback,get a error"
+				print "[ERROR] errro:{}".format(e)
+
 			self.status_notify()
 			print('[INFO] Start to get contacts .')
 			if self.get_contact():
@@ -1216,10 +1223,18 @@ class WXBot:
 			self.proc_msg()
 			self.status = 'loginout'
 
+			self.login_out_callback()
+
 		except Exception as e:
 
 			print(('[ERROR] Web WeChat run failed --> %s' % (e)))
 			self.status = 'loginout'
+
+	def login_succeed_callback(self):
+		pass
+
+	def login_out_callback(self):
+		pass
 
 	def get_uuid(self):
 		url = 'https://login.weixin.qq.com/jslogin'
