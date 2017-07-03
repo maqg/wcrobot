@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.5.47, for debian-linux-gnu (x86_64)
+-- MySQL dump 10.13  Distrib 5.6.22, for osx10.10 (x86_64)
 --
 -- Host: localhost    Database: dbrobot
 -- ------------------------------------------------------
--- Server version	5.5.47-0+deb7u1
+-- Server version	5.6.22
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -40,7 +40,6 @@ CREATE TABLE `tb_account` (
   KEY `tb_account_name` (`U_Name`),
   KEY `tb_account_type` (`U_Type`),
   KEY `tb_account_email` (`U_Email`),
-  KEY `tb_account_phonenumber` (`U_PhoneNumber`),
   KEY `tb_account_password` (`U_Password`),
   KEY `tb_account_createtime` (`U_CreateTime`),
   KEY `tb_account_lastlogin` (`U_LastLogin`),
@@ -54,7 +53,7 @@ CREATE TABLE `tb_account` (
 
 LOCK TABLES `tb_account` WRITE;
 /*!40000 ALTER TABLE `tb_account` DISABLE KEYS */;
-INSERT INTO `tb_account` VALUES ('c9b7c22a0ae911e7af10525400659eb7',1,7,'admin','292f137f691469948acd0e72b141e373','','',0,1496817719000,0,'');
+INSERT INTO `tb_account` VALUES ('c9b7c22a0ae911e7af10525400659eb7',1,7,'admin','292f137f691469948acd0e72b141e373','','',0,1499092850000,0,'');
 /*!40000 ALTER TABLE `tb_account` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -64,11 +63,12 @@ UNLOCK TABLES;
 /*!50003 SET character_set_results = utf8 */ ;
 /*!50003 SET collation_connection  = utf8_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = '' */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER trigger_delete_account AFTER DELETE ON tb_account FOR EACH ROW
 BEGIN
 DELETE FROM tb_session WHERE S_UserId=old.ID;
+DELETE FROM tb_quota WHERE Q_AccountId=old.ID;
 END */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -218,6 +218,38 @@ LOCK TABLES `tb_misc` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `tb_quota`
+--
+
+DROP TABLE IF EXISTS `tb_quota`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tb_quota` (
+  `ID` varchar(36) NOT NULL DEFAULT '',
+  `Q_Name` varchar(64) NOT NULL DEFAULT '',
+  `Q_AccountId` varchar(36) NOT NULL DEFAULT '',
+  `Q_Robot` int(11) NOT NULL DEFAULT '0',
+  `Q_Message` int(11) NOT NULL DEFAULT '0' COMMENT 'Message Amount in MB',
+  `Q_Group` int(11) NOT NULL DEFAULT '0' COMMENT 'Group Amount',
+  `Q_CreateTime` bigint(20) NOT NULL DEFAULT '0',
+  `Q_LastSync` bigint(20) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`ID`),
+  KEY `tb_quota_id` (`ID`),
+  KEY `tb_quota_name` (`Q_Name`),
+  KEY `tb_quota_accountid` (`Q_AccountId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tb_quota`
+--
+
+LOCK TABLES `tb_quota` WRITE;
+/*!40000 ALTER TABLE `tb_quota` DISABLE KEYS */;
+/*!40000 ALTER TABLE `tb_quota` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `tb_robot`
 --
 
@@ -262,7 +294,7 @@ UNLOCK TABLES;
 /*!50003 SET character_set_results = utf8 */ ;
 /*!50003 SET collation_connection  = utf8_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = '' */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER trigger_delete_robot AFTER DELETE ON tb_robot FOR EACH ROW
 BEGIN
@@ -315,7 +347,7 @@ UNLOCK TABLES;
 /*!50003 SET character_set_results = utf8 */ ;
 /*!50003 SET collation_connection  = utf8_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = '' */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER trigger_delete_session AFTER DELETE ON tb_session FOR EACH ROW 
 BEGIN
@@ -327,31 +359,29 @@ DELIMITER ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
 
 --
--- Temporary table structure for view `v_account`
+-- Temporary view structure for view `v_account`
 --
 
 DROP TABLE IF EXISTS `v_account`;
 /*!50001 DROP VIEW IF EXISTS `v_account`*/;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
-/*!50001 CREATE TABLE `v_account` (
-  `ID` tinyint NOT NULL,
-  `Name` tinyint NOT NULL
-) ENGINE=MyISAM */;
+/*!50001 CREATE VIEW `v_account` AS SELECT 
+ 1 AS `ID`,
+ 1 AS `Name`*/;
 SET character_set_client = @saved_cs_client;
 
 --
--- Temporary table structure for view `v_robot`
+-- Temporary view structure for view `v_robot`
 --
 
 DROP TABLE IF EXISTS `v_robot`;
 /*!50001 DROP VIEW IF EXISTS `v_robot`*/;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
-/*!50001 CREATE TABLE `v_robot` (
-  `ID` tinyint NOT NULL,
-  `Name` tinyint NOT NULL
-) ENGINE=MyISAM */;
+/*!50001 CREATE VIEW `v_robot` AS SELECT 
+ 1 AS `ID`,
+ 1 AS `Name`*/;
 SET character_set_client = @saved_cs_client;
 
 --
@@ -362,7 +392,6 @@ SET character_set_client = @saved_cs_client;
 -- Final view structure for view `v_account`
 --
 
-/*!50001 DROP TABLE IF EXISTS `v_account`*/;
 /*!50001 DROP VIEW IF EXISTS `v_account`*/;
 /*!50001 SET @saved_cs_client          = @@character_set_client */;
 /*!50001 SET @saved_cs_results         = @@character_set_results */;
@@ -381,7 +410,6 @@ SET character_set_client = @saved_cs_client;
 -- Final view structure for view `v_robot`
 --
 
-/*!50001 DROP TABLE IF EXISTS `v_robot`*/;
 /*!50001 DROP VIEW IF EXISTS `v_robot`*/;
 /*!50001 SET @saved_cs_client          = @@character_set_client */;
 /*!50001 SET @saved_cs_results         = @@character_set_results */;
@@ -405,4 +433,4 @@ SET character_set_client = @saved_cs_client;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-06-07 14:41:59
+-- Dump completed on 2017-07-03 22:40:50

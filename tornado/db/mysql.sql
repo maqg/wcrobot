@@ -34,11 +34,28 @@ ALTER TABLE tb_account ADD INDEX tb_account_state (U_State);
 ALTER TABLE tb_account ADD INDEX tb_account_name (U_Name);
 ALTER TABLE tb_account ADD INDEX tb_account_type (U_Type);
 ALTER TABLE tb_account ADD INDEX tb_account_email (U_Email);
-ALTER TABLE tb_account ADD INDEX tb_account_phonenumber (U_PhoneNumber);
 ALTER TABLE tb_account ADD INDEX tb_account_password (U_Password);
 ALTER TABLE tb_account ADD INDEX tb_account_createtime (U_CreateTime);
 ALTER TABLE tb_account ADD INDEX tb_account_lastlogin (U_LastLogin);
 ALTER TABLE tb_account ADD INDEX tb_account_lastsync (U_LastSync);
+
+
+DROP TABLE IF EXISTS `tb_quota`;
+CREATE TABLE `tb_quota` (
+		`ID` VARCHAR(36) NOT NULL DEFAULT '',
+		`Q_Name` VARCHAR(64) NOT NULL DEFAULT '',
+		`Q_AccountId` VARCHAR(36) NOT NULL DEFAULT '',
+		`Q_Robot` INTEGER NOT NULL DEFAULT '0',
+		`Q_Message` INTEGER NOT NULL DEFAULT '0' COMMENT 'Message Amount in MB',
+		`Q_Group` INTEGER NOT NULL DEFAULT '0' COMMENT 'Group Amount',
+		`Q_CreateTime` BIGINT NOT NULL DEFAULT '0',
+		`Q_LastSync` BIGINT NOT NULL DEFAULT '0',
+		PRIMARY KEY (`ID`)
+) ENGINE=Innodb DEFAULT CHARSET=utf8;
+ALTER TABLE tb_quota ADD INDEX tb_quota_id (ID);
+ALTER TABLE tb_quota ADD INDEX tb_quota_name (Q_Name);
+ALTER TABLE tb_quota ADD INDEX tb_quota_accountid (Q_AccountId);
+
 
 DROP TABLE IF EXISTS `tb_robot`;
 CREATE TABLE `tb_robot` (
@@ -159,6 +176,7 @@ END; //
 CREATE TRIGGER trigger_delete_account AFTER DELETE ON tb_account FOR EACH ROW
 BEGIN
 DELETE FROM tb_session WHERE S_UserId=old.ID;
+DELETE FROM tb_quota WHERE Q_AccountId=old.ID;
 END; //
 
 CREATE TRIGGER trigger_delete_session AFTER DELETE ON tb_session FOR EACH ROW 
