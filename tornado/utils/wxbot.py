@@ -1211,8 +1211,8 @@ class WXBot:
 			try:
 				self.login_succeed_callback()
 			except Exception as e:
-				print "[ERROR] run:login_succeed_callback,get a error"
-				print "[ERROR] errro:{}".format(e)
+				print("[ERROR] run:login_succeed_callback,get a error")
+				print("[ERROR] errro:{}".format(e))
 
 			self.status_notify()
 			print('[INFO] Start to get contacts .')

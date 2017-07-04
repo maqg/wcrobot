@@ -8,7 +8,7 @@ from utils.commonUtil import getUuid
 from utils.timeUtil import get_current_time, getStrTime
 
 
-def getQuota(db, account):
+def getQuota(db, myId):
 
 	cond = "WHERE ID='%s'" % (myId)
 
@@ -58,9 +58,10 @@ class Quota:
 		return 0
 
 	def loadFromObj(self):
+
 		self.myId = self.dbObj["ID"]
 		self.robots = self.dbObj["Q_Robot"]
-		self.phone = self.dbObj["Q_Message"]
+		self.messageCapacity = self.dbObj["Q_Message"]
 		self.group = self.dbObj["Q_Group"]
 		self.lastSync = self.dbObj["Q_LastSync"]
 		self.createTime = self.dbObj["Q_CreateTime"]

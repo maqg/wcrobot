@@ -54,7 +54,7 @@ CREATE TABLE `tb_account` (
 
 LOCK TABLES `tb_account` WRITE;
 /*!40000 ALTER TABLE `tb_account` DISABLE KEYS */;
-INSERT INTO `tb_account` VALUES ('c9b7c22a0ae911e7af10525400659eb7',1,7,'admin','292f137f691469948acd0e72b141e373','','','',0,1499180366000,0,'');
+INSERT INTO `tb_account` VALUES ('c9b7c22a0ae911e7af10525400659eb7',1,7,'admin','292f137f691469948acd0e72b141e373','00000000000000000000000000000000','','',0,1499181053000,0,'');
 /*!40000 ALTER TABLE `tb_account` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -243,6 +243,7 @@ CREATE TABLE `tb_quota` (
 
 LOCK TABLES `tb_quota` WRITE;
 /*!40000 ALTER TABLE `tb_quota` DISABLE KEYS */;
+INSERT INTO `tb_quota` VALUES ('00000000000000000000000000000000',0,0,0,0,0);
 /*!40000 ALTER TABLE `tb_quota` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -430,4 +431,4 @@ SET character_set_client = @saved_cs_client;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-07-04 22:59:27
+-- Dump completed on 2017-07-04 23:10:53
