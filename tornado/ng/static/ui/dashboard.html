@@ -1,26 +1,26 @@
 <html>
 <head lang="en">
     <meta charset="UTF-8">
-    <link rel="icon" href="/static/imgs/button_edit.png" type="image/x-icon">
-    <script src="/static/jquery-1.11.3.min.js"></script>
+    <link rel="icon" href="/ng/static/imgs/button_edit.png" type="image/x-icon">
+    <script src="/ng/static/jquery-1.11.3.min.js"></script>
 
-    <link href="/static/bootstrap334/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
-    <link href="/static/bootstrap334/css/bootstrap-theme.min.css" rel="stylesheet" type="text/css"/>
-    <link href="/static/bootstrap334/css/bootstrap-datetimepicker.css" rel="stylesheet" type="text/css"/>
-    <script src="/static/bootstrap334/js/bootstrap.min.js"></script>
-    <script src="/static/bootstrap334/js/bootstrap-datetimepicker.js"></script>
-    <script src="/static/bootstrap334/js/locales/bootstrap-datetimepicker.fr.js"></script>
-    <script src="/static/bootstrap334/js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
+    <link href="/ng/static/bootstrap334/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+    <link href="/ng/static/bootstrap334/css/bootstrap-theme.min.css" rel="stylesheet" type="text/css"/>
+    <link href="/ng/static/bootstrap334/css/bootstrap-datetimepicker.css" rel="stylesheet" type="text/css"/>
+    <script src="/ng/static/bootstrap334/js/bootstrap.min.js"></script>
+    <script src="/ng/static/bootstrap334/js/bootstrap-datetimepicker.js"></script>
+    <script src="/ng/static/bootstrap334/js/locales/bootstrap-datetimepicker.fr.js"></script>
+    <script src="/ng/static/bootstrap334/js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
 
-    <script src="/static/js/utils.js"></script>
+    <script src="/ng/static/js/utils.js"></script>
 
-    <link href="/static/css/main.css" rel="stylesheet" type="text/css"/>
+    <link href="/ng/static/css/main.css" rel="stylesheet" type="text/css"/>
 
     <title>WCROBOT</title>
 
     <script>
         var g_isIE = !!window.ActiveXObject || "ActiveXObject" in window;
-        if (g_isIE == true) {
+        if (g_isIE === true) {
             console = {};
             console.log = function () {
                 return null;
@@ -35,7 +35,7 @@
 <div id="myheader" class="myheader navbar navbar-inverse">
     <div class="container">
 
-        <img style="height: 30px; width: 30px; margin: 10px; float: left" src="/static/imgs/weixin.png">
+        <img style="height: 30px; width: 30px; margin: 10px; float: left" src="/ng/static/imgs/weixin.png">
         <p style="float: left; margin: 10px 0 10px">WCROBOT机器人</p>
 
         <nav>
@@ -70,14 +70,20 @@
 
 <div id="mybody">
 
-    <h2>WCROBOT列表</h2>
+    <div class="left-dashboard">
+        <img src="/ng/static/imgs/account.png">
+        <p><span>机器人数量:</span>10</p>
+    </div>
 
-    <ul class="list">
-        <li>A</li>
-        <li>B</li>
-        <li>C</li>
-    </ul>
+    <div class="middle-dashboard">
+        <img src="/ng/static/imgs/robot.png">
+        <p><span>机器人数量:</span>10</p>
+    </div>
 
+    <div class="right-dashboard">
+        <img src="/ng/static/imgs/msg.png">
+        <p><span>机器人数量:</span>10</p>
+    </div>
 </div>
 
 <div id="myfooter">

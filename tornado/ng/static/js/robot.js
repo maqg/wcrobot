@@ -128,14 +128,14 @@ function printrobot(dataObj) {
     bodyStr += "<td>" + dataObj["lastLogin"] + "</td><td>";
 
     if (dataObj["state"] === 0) {
-        bodyStr += "<div class=\"robotbutton\" onclick=\"robotlogin('" + dataObj["id"] + "');\" style=\"margin-right: 10px\" title='登录'><img src='/static/imgs/button_login.png'></div>";
+        bodyStr += "<div class=\"robotbutton\" onclick=\"robotlogin('" + dataObj["id"] + "');\" style=\"margin-right: 10px\" title='登录'><img src='/ng/static/imgs/button_login.png'></div>";
     } else if (dataObj["state"] === 1) {
-        bodyStr += "<div class=\"robotbutton\" onclick=\"robotlogout('" + dataObj["id"] + "');\" style=\"margin-right: 10px\" title='退出'><img src='/static/imgs/button_logout.png'></div>";
+        bodyStr += "<div class=\"robotbutton\" onclick=\"robotlogout('" + dataObj["id"] + "');\" style=\"margin-right: 10px\" title='退出'><img src='/ng/static/imgs/button_logout.png'></div>";
     } else {
-        bodyStr += "<div class=\"robotbutton\" onclick=\"robotlogout('" + dataObj["id"] + "');\" style=\"margin-right: 10px\" title='中止'><img src='/static/imgs/button_stop.png'></div>";
+        bodyStr += "<div class=\"robotbutton\" onclick=\"robotlogout('" + dataObj["id"] + "');\" style=\"margin-right: 10px\" title='中止'><img src='/ng/static/imgs/button_stop.png'></div>";
     }
-    bodyStr += "<div class=\"robotbutton\" onclick=\"robotqc('" + dataObj["id"] + "');\" style=\"margin-right: 10px\" title='二维码'><img src='/static/imgs/button_qrcode.png'></div>";
-    bodyStr += "<div class=\"robotbutton\" onclick=\"removerobot('" + dataObj["id"] + "');\" style=\"margin-right: 10px\" title='删除'><img src='/static/imgs/button_delete.png'></div></td></tr>";
+    bodyStr += "<div class=\"robotbutton\" onclick=\"robotqc('" + dataObj["id"] + "');\" style=\"margin-right: 10px\" title='二维码'><img src='/ng/static/imgs/button_qrcode.png'></div>";
+    bodyStr += "<div class=\"robotbutton\" onclick=\"removerobot('" + dataObj["id"] + "');\" style=\"margin-right: 10px\" title='删除'><img src='/ng/static/imgs/button_delete.png'></div></td></tr>";
 
     $tr = $(bodyStr);
 

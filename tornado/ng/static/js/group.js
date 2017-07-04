@@ -44,12 +44,7 @@ function createHeader() {
 
     bodyStr = "<tr><th>别名</th>";
     bodyStr += "<th>用户名</th>";
-    bodyStr += "<th>省</th>";
-    bodyStr += "<th>城市</th>";
-    bodyStr += "<th>显示名</th>";
-    bodyStr += "<th>标注名</th>";
-    bodyStr += "<th>性别</th>";
-    bodyStr += "<th>个性签名</th>";
+    bodyStr += "<th>成员数量</th>";
     bodyStr += "<th>操作</th></tr>";
 
     return $(bodyStr);
@@ -69,11 +64,7 @@ function raiseDetail(robot) {
         bodyStr += "<tr><td>ID</td><td>" + robot["id"] + "</td></tr>";
         bodyStr += "<tr><td>别名</td><td>" + robot["name"] + "</td></tr>";
         bodyStr += "<tr><td>用户名</td><td>" + robot["uId"] + "</td></tr>";
-        bodyStr += "<tr><td>省</td><td>" + robot["uName"] + "</td></tr>";
-        bodyStr += "<tr><td>城市</td><td>" + robot["createTime"] + "</td></tr>";
-        bodyStr += "<tr><td>标注名</td><td>" + robot["lastSync"] + "</td></tr>";
-        bodyStr += "<tr><td>性别</td><td>" + robot["lastLogin"] + "</td></tr>";
-        bodyStr += "<tr><td>签名</td><td>" + robot["lastLogin"] + "</td></tr>";
+        bodyStr += "<tr><td>组员数量</td><td>" + robot["lastLogin"] + "</td></tr>";
 
         $detailBody.html(bodyStr);
 
@@ -94,19 +85,10 @@ function printrobot(dataObj) {
     bodyStr = "<tr><td>" + dataObj["name"] + "</td>";
     bodyStr += "<td>" + dataObj["uName"] + "</td>";
     bodyStr += "<td>" + dataObj["uId"] + "</td>";
-    bodyStr += "<td>" + dataObj["contacts"] + "</td>";
-    bodyStr += "<td>" + dataObj["groups"] + "</td>";
     bodyStr += "<td>" + dataObj["messages"] + "</td>";
-    if (dataObj["state"] === 0) {
-        bodyStr += "<td style='color: red;'>" + dataObj["stateCN"] + "</td>";
-    } else if (dataObj["state"] === 1) {
-        bodyStr += "<td style='color: green;'>" + dataObj["stateCN"] + "</td>";
-    } else {
-        bodyStr += "<td style='color: sandybrown;'>" + dataObj["stateCN"] + "</td>";
-    }
     bodyStr += "<td>" + dataObj["lastLogin"] + "</td><td>";
 
-    bodyStr += "<div class=\"robotbutton\" onclick=\"robotqc('" + dataObj["id"] + "');\" style=\"margin-right: 10px\" title='查看'><img src='/static/imgs/button_qrcode.png'></div>";
+    bodyStr += "<div class=\"robotbutton\" onclick=\"robotqc('" + dataObj["id"] + "');\" style=\"margin-right: 10px\" title='查看'><img src='/ng/static/imgs/button_qrcode.png'></div>";
 
     $tr = $(bodyStr);
 
