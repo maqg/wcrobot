@@ -14,6 +14,7 @@
 		<field name='U_Type' type='INTEGER' caption=''/>
 		<field name='U_Name' type='VARCHAR(10)' caption=''/>
 		<field name='U_Password' type='VARCHAR(10)' caption=''/>
+		<field name='U_QuotaId' type='VARCHAR(10)' caption=''/>
 		<field name='U_Email' type='VARCHAR(10)' caption=''/>
 		<field name='U_PhoneNumber' type='VARCHAR(10)' caption=''/>
 		<field name='U_LastLogin' type='BIGINT' caption=''/>
@@ -23,8 +24,6 @@
 	</file>
 	<file index="1" name="tb_quota" caption="">
 		<field name='ID' type='VARCHAR(10)' caption=''/>
-		<field name='Q_Name' type='VARCHAR(10)' caption=''/>
-		<field name='Q_AccountId' type='VARCHAR(10)' caption=''/>
 		<field name='Q_Robot' type='INTEGER' caption=''/>
 		<field name='Q_Message' type='INTEGER' caption=''/>
 		<field name='Q_Group' type='INTEGER' caption=''/>

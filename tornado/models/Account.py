@@ -4,9 +4,10 @@
 from hashlib import md5 as MD5
 
 from conf.dbconfig import TB_ACCOUNT
-from core.err_code import DB_ERR, OCT_SUCCESS, NOT_ENOUGH_PARAS, USER_PASSWD_ERR, USER_NOT_EXIST
+from core.err_code import DB_ERR, OCT_SUCCESS, NOT_ENOUGH_PARAS, USER_PASSWD_ERR
 from core.log import DEBUG, ERROR, WARNING
-from utils.commonUtil import getUuid, transToObj, transToStr
+from models.Quota import getQuota
+from utils.commonUtil import getUuid
 from utils.timeUtil import get_current_time, howLongAgo, getStrTime
 
 ROLE_SUPERADMIN = 7
@@ -76,9 +77,13 @@ class Account:
 		self.stateCN = ""
 		self.roleCN = ""
 
+		self.quotaId = ""
+
 		self.lastLogin = 0
 		self.lastSync = 0
 		self.createTime = 0
+
+		self.quota = None
 
 	def init(self):
 
@@ -99,6 +104,13 @@ class Account:
 
 		return 0
 
+	def loadQuota(self):
+		if not self.quotaId:
+			ERROR("quota id of account not set")
+			return
+
+		self.quota = getQuota(self.db, self.quotaId)
+
 	def loadFromObj(self):
 
 		self.myId = self.dbObj["ID"]
@@ -106,6 +118,7 @@ class Account:
 		self.email = self.dbObj["U_Email"]
 		self.phone = self.dbObj["U_PhoneNumber"]
 		self.password = self.dbObj["U_Password"]
+		self.quotaId = self.dbObj["U_QuotaId"]
 		self.state = self.dbObj["U_State"]
 		self.stateCN = userState_d2s(self.dbObj["U_State"])
 		self.role = self.dbObj["U_Type"]
@@ -237,8 +250,12 @@ class Account:
 			"createTime": getStrTime(self.createTime),
 			"role": self.role,
 			"roleCN": self.roleCN,
-			"stateCN": self.stateCN
+			"stateCN": self.stateCN,
+			"quotaId": self.quotaId
 		}
+
+		if self.quota:
+			account["quota"] = self.quota.toObj()
 
 		return account
 

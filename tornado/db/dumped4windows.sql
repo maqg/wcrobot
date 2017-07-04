@@ -28,6 +28,7 @@ CREATE TABLE `tb_account` (
   `U_Type` int(11) NOT NULL DEFAULT '3' COMMENT '7: super,3 admin,1 audit',
   `U_Name` varchar(128) NOT NULL DEFAULT '',
   `U_Password` varchar(128) NOT NULL DEFAULT '',
+  `U_QuotaId` varchar(36) NOT NULL DEFAULT '',
   `U_Email` varchar(128) NOT NULL DEFAULT '',
   `U_PhoneNumber` varchar(32) NOT NULL DEFAULT '',
   `U_LastLogin` bigint(20) NOT NULL DEFAULT '0',
@@ -53,7 +54,7 @@ CREATE TABLE `tb_account` (
 
 LOCK TABLES `tb_account` WRITE;
 /*!40000 ALTER TABLE `tb_account` DISABLE KEYS */;
-INSERT INTO `tb_account` VALUES ('c9b7c22a0ae911e7af10525400659eb7',1,7,'admin','292f137f691469948acd0e72b141e373','','',0,1499092850000,0,'');
+INSERT INTO `tb_account` VALUES ('c9b7c22a0ae911e7af10525400659eb7',1,7,'admin','292f137f691469948acd0e72b141e373','','','',0,1499180366000,0,'');
 /*!40000 ALTER TABLE `tb_account` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -226,17 +227,13 @@ DROP TABLE IF EXISTS `tb_quota`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `tb_quota` (
   `ID` varchar(36) NOT NULL DEFAULT '',
-  `Q_Name` varchar(64) NOT NULL DEFAULT '',
-  `Q_AccountId` varchar(36) NOT NULL DEFAULT '',
-  `Q_Robot` int(11) NOT NULL DEFAULT '0',
-  `Q_Message` int(11) NOT NULL DEFAULT '0' COMMENT 'Message Amount in MB',
-  `Q_Group` int(11) NOT NULL DEFAULT '0' COMMENT 'Group Amount',
+  `Q_Robot` int(11) NOT NULL DEFAULT '5',
+  `Q_Message` int(11) NOT NULL DEFAULT '512' COMMENT 'Message Amount in MB',
+  `Q_Group` int(11) NOT NULL DEFAULT '10' COMMENT 'Group Amount',
   `Q_CreateTime` bigint(20) NOT NULL DEFAULT '0',
   `Q_LastSync` bigint(20) NOT NULL DEFAULT '0',
   PRIMARY KEY (`ID`),
-  KEY `tb_quota_id` (`ID`),
-  KEY `tb_quota_name` (`Q_Name`),
-  KEY `tb_quota_accountid` (`Q_AccountId`)
+  KEY `tb_quota_id` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -433,4 +430,4 @@ SET character_set_client = @saved_cs_client;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-07-03 22:40:50
+-- Dump completed on 2017-07-04 22:59:27

@@ -13,6 +13,7 @@ UNIXSOCKET_REDCENT = "/var/lib/mysql/mysql.sock"
 DB_SERVER = "127.0.0.1"
 
 TB_ACCOUNT = "tb_account"
+TB_QUOTA = "tb_quota"
 TB_MISC = "tb_misc"
 TB_LOG = "tb_log"
 TB_APIRECORD = "tb_apirecord"

@@ -21,6 +21,7 @@ CREATE TABLE `tb_account` (
 		`U_Type` INTEGER NOT NULL DEFAULT '3' COMMENT '7: super,3 admin,1 audit',
 		`U_Name` VARCHAR(128) NOT NULL DEFAULT '',
 		`U_Password` VARCHAR(128) NOT NULL DEFAULT '',
+		`U_QuotaId` VARCHAR(36) NOT NULL DEFAULT '',
 		`U_Email` VARCHAR(128) NOT NULL DEFAULT '',
 		`U_PhoneNumber` VARCHAR(32) NOT NULL DEFAULT '',
 		`U_LastLogin` BIGINT NOT NULL DEFAULT '0',
@@ -43,18 +44,14 @@ ALTER TABLE tb_account ADD INDEX tb_account_lastsync (U_LastSync);
 DROP TABLE IF EXISTS `tb_quota`;
 CREATE TABLE `tb_quota` (
 		`ID` VARCHAR(36) NOT NULL DEFAULT '',
-		`Q_Name` VARCHAR(64) NOT NULL DEFAULT '',
-		`Q_AccountId` VARCHAR(36) NOT NULL DEFAULT '',
-		`Q_Robot` INTEGER NOT NULL DEFAULT '0',
-		`Q_Message` INTEGER NOT NULL DEFAULT '0' COMMENT 'Message Amount in MB',
-		`Q_Group` INTEGER NOT NULL DEFAULT '0' COMMENT 'Group Amount',
+		`Q_Robot` INTEGER NOT NULL DEFAULT '5',
+		`Q_Message` INTEGER NOT NULL DEFAULT '512' COMMENT 'Message Amount in MB',
+		`Q_Group` INTEGER NOT NULL DEFAULT '10' COMMENT 'Group Amount',
 		`Q_CreateTime` BIGINT NOT NULL DEFAULT '0',
 		`Q_LastSync` BIGINT NOT NULL DEFAULT '0',
 		PRIMARY KEY (`ID`)
 ) ENGINE=Innodb DEFAULT CHARSET=utf8;
 ALTER TABLE tb_quota ADD INDEX tb_quota_id (ID);
-ALTER TABLE tb_quota ADD INDEX tb_quota_name (Q_Name);
-ALTER TABLE tb_quota ADD INDEX tb_quota_accountid (Q_AccountId);
 
 
 DROP TABLE IF EXISTS `tb_robot`;
