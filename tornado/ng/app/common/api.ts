@@ -31,6 +31,6 @@ export class ServiceResponse {
 }
 
 export const API_PATH = '/api/';
-export const API_PREFIX = "octlink.mirage.center";
+export const API_PREFIX = "octlink.tundra.center";
 export const API_KEY = "00000000000000000000000000000000";
 export const SESSION_ID = "00000000000000000000000000000000";
