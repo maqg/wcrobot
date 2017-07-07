@@ -5,6 +5,7 @@ import { AppComponent } from './app.component';
 import { NgModule } from '@angular/core'
 import { FormsModule }   from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser'
+import {AccountsComponent} from "./account/accounts.component";
 
 @NgModule({
     imports: [
@@ -15,7 +16,8 @@ import { BrowserModule } from '@angular/platform-browser'
 
     declarations: [
         AppComponent,
-        DashboardComponent
+        DashboardComponent,
+        AccountsComponent
     ],
 
     providers: [
