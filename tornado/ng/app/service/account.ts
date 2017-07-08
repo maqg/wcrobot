@@ -1,3 +1,5 @@
+import {Quota} from "./quota";
+
 export class Account {
     id: string;
     state: number;
@@ -8,4 +10,6 @@ export class Account {
     lastLogin: string;
     phoneNumber: string;
     desc: string;
-};
+
+    quota: Quota;
+}

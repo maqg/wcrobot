@@ -4,16 +4,16 @@
         <p style="float: left; margin: 10px 0 10px; color: white; font-size: 1.6em; line-height: 30px">Tundra</p>
         <nav>
             <ul class="nav navbar-nav pull-right">
-                <li><a href="/">主页面</a></li>
+                <li><a [routerLink]="['/dashboard']">主页面</a></li>
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                             机器人管理 <b class="caret"></b>
                         </a>
                     <ul class="dropdown-menu">
-                        <li><a href="/robots/">机器人</a></li>
-                        <li><a href="/contacts/">联系人</a></li>
-                        <li><a href="/group/">群组</a></li>
-                        <li><a href="/message/">消息</a></li>
+                        <li><a [routerLink]="['/robots']">机器人</a></li>
+                        <li><a [routerLink]="['/contacts']">联系人</a></li>
+                        <li><a [routerLink]="['/groups']">群组</a></li>
+                        <li><a [routerLink]="['/messages']">消息</a></li>
                     </ul>
                 </li>
                 <li class="dropdown">
@@ -22,9 +22,8 @@
                         </a>
                     <ul class="dropdown-menu">
                         <li><a [routerLink]="['/accounts']">账号管理</a></li>
-                        <li><a href="/accounts/">账号管理</a></li>
-                        <li><a href="/usercenter/">用户中心</a></li>
-                        <li><a href="/logout">退出</a></li>
+                        <li><a [routerLink]="['/usercenter']">用户中心</a></li>
+                        <li><a [routerLink]="['/logout']">退出</a></li>
                     </ul>
                 </li>
                 <li class="dropdown">
@@ -32,7 +31,7 @@
                             配置管理 <b class="caret"></b>
                         </a>
                     <ul class="dropdown-menu">
-                        <li><a href="/config/">基本配置</a></li>
+                        <li><a [routerLink]="['/config']">配置</a></li>
                     </ul>
                 </li>
             </ul>

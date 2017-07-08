@@ -13,6 +13,7 @@ const routes:Routes = [
 
 const routes:Routes = [
     {path: '', component: DashboardComponent},
+    {path: 'dashboard', component: DashboardComponent},
     // { path: 'login', component: LoginComponent },
     {
         path: 'home', component: DashboardComponent,
