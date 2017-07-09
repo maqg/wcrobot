@@ -47,11 +47,11 @@ export class AccountService {
             }
         ];
 
-    getAccounts(): Account[] {
-        return this.accounts;
+    getAccounts(): Promise<Account[]> {
+        return Promise.resolve(this.accounts);
     }
 
     getAccount(id: string): any {
-        return this.accounts[0];
+        return Promise.resolve(this.accounts[0]);
     }
 }

@@ -16,15 +16,18 @@ export class AccountsComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.accounts = this.accountService.getAccounts().slice(1, 5);
+        this.accountService.getAccounts().then(accounts => this.accounts = accounts);
     }
 
     delete(account: Account): void {
-
     }
 
     gotoDetail(account: Account): void {
-        this.router.navigate(['/detail', account.id]);
+        this.router.navigate(["/accounts", account.id]);
+    }
+
+    gotoEditQuota(account: Account): void {
+        this.router.navigate(["/accountquota", account.id])
     }
 
 }

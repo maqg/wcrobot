@@ -9,20 +9,21 @@
         <th>Email</th>
         <th>Phone</th>
         <th>UUID</th>
+        <th>创建时间</th>
         <th>上次登录</th>
         <th>操作</th>
     </tr>
     <tr *ngFor="let account of accounts">
-        <td>{{ account.name }}kkk{{ account.quota.robots }}</td>
+        <td>{{ account.name }} <a (click)="gotoEditQuota(account)">配额</a></td>
         <td>{{ account.state }}</td>
         <td>{{ account.email }}</td>
         <td>{{ account.phoneNumber }}</td>
         <td>{{ account.id }}</td>
+        <td>{{ account.createTime }}</td>
         <td>{{ account.lastLogin }}</td>
         <td>
-	        <button (click)="gotoDetail(account)">编辑</button>
-	        <button (click)="delete(account)">删除</button>
+	        <button class="btn btn-default" (click)="gotoDetail(account)">编辑</button>
+	        <button class="btn btn-default" (click)="delete(account)">删除</button>
         </td>
     </tr>
-
 </table>

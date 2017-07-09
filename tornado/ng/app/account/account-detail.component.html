@@ -1,22 +1,23 @@
 <div *ngIf="account">
-    <h1>{{account.name}} 详情</h1>
-    <div>
-        <div class="labelForm"><label>id: </label>{{ account.id }}</div>
-        <div class="labelForm"><label>状态：</label>{{ account.state }}</div>
-        <div class="inputForm">
-            <label>name: </label>
-            <input [(ngModel)]="account.name" placeholder="name" />
-        </div>
-        <div class="inputForm">
-            <label>Email: </label>
-            <input [(ngModel)]="account.email" placeholder="email" />
-        </div>
-        <div class="inputForm">
-            <label>PhoneNumber: </label>
-            <input [(ngModel)]="account.phoneNumber" placeholder="phoneNumber" />
-        </div>
-        <div class="labelForm"><label>CreateTime: </label>{{ account.createTime }}</div>
-        <div class="labelForm"><label>LastSync: </label>{{ account.LastSync }}</div>
-    </div>
-    <button (click)="goBack()">返回</button>
+
+	<h1>编辑账号：{{ account.name }}</h1>
+
+	<div class="editForm">
+		<div>
+			<div class="form-group">
+				<label class="control-label">账号：</label>
+				<input class="form-control" [(ngModel)]="account.name" placeholder="accountName" readonly/>
+			</div>
+			<div class="form-group">
+				<label class="control-label">Email: </label>
+				<input class="form-control" [(ngModel)]="account.email" placeholder="邮件地址"/>
+			</div>
+			<div class="form-group">
+				<label class="control-label">电话：</label>
+				<input class="form-control" [(ngModel)]="account.phoneNumber" placeholder="电话号码"/>
+			</div>
+		</div>
+		<button class="btn btn-default" (click)="goBack()">编辑</button>
+		<button class="btn btn-default" (click)="goBack()">返回</button>
+	</div>
 </div>

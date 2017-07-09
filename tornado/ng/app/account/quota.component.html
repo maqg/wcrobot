@@ -1,0 +1,24 @@
+<h1>{{ account.name }} 配额</h1>
+
+<div class="editForm" *ngIf="account">
+	<div>
+		<div class="form-group">
+			<label class="control-label">账号：</label>
+			<input class="form-control" [(ngModel)]="account.name" placeholder="accountName" readonly/>
+		</div>
+		<div class="form-group">
+			<label class="control-label">机器人数量: </label>
+			<input class="form-control" [(ngModel)]="account.quota.robots" placeholder="机器人数量"/>
+		</div>
+		<div class="form-group">
+			<label class="control-label">空间大小（MB）: </label>
+			<input class="form-control" [(ngModel)]="account.quota.messages" placeholder="信息空间"/>
+		</div>
+		<div class="form-group">
+			<label class="control-label">群组数量: </label>
+			<input class="form-control" [(ngModel)]="account.quota.groups" placeholder="群组数量"/>
+		</div>
+		<button class="btn btn-default" (click)="goBack()">编辑</button>
+		<button class="btn btn-default" (click)="goBack()">返回</button>
+	</div>
+</div>
