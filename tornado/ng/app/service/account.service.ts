@@ -1,13 +1,14 @@
-import { Account } from './account';
+import {Account} from './account';
 
-import { Injectable } from "@angular/core";
+import {Injectable} from "@angular/core";
 import {Quota} from "./quota";
+import forEach = require("core-js/fn/array/for-each");
 
 @Injectable()
 export class AccountService {
 
-    getAccounts(): Account[] {
-        let accounts = [
+    private accounts: Account[] =
+        [
             {
                 id: "a01d4f96-62e3-11e7-8a52-525400659eb7",
                 state: 1,
@@ -43,8 +44,14 @@ export class AccountService {
                 phoneNumber: "22011-33123-1312",
                 desc: "Admin Account of Jacky",
                 quota: new Quota(300)
-            }                        
+            }
         ];
-        return accounts;
+
+    getAccounts(): Account[] {
+        return this.accounts;
+    }
+
+    getAccount(id: string): any {
+        return this.accounts[0];
     }
 }

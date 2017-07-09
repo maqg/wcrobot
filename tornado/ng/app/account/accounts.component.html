@@ -19,7 +19,10 @@
         <td>{{ account.phoneNumber }}</td>
         <td>{{ account.id }}</td>
         <td>{{ account.lastLogin }}</td>
-        <td><a>删除</a></td>
+        <td>
+	        <button (click)="gotoDetail(account)">编辑</button>
+	        <button (click)="delete(account)">删除</button>
+        </td>
     </tr>
 
 </table>
