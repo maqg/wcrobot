@@ -1,13 +1,14 @@
-#!usr/bin/python
+#!/usr/bin/python3
 # -*- coding: utf-8 -*- 
 
 import time
 from binascii import crc32 as CRC32
 
 from core import dbmysql
-from core.err_code import USER_ALREADY_EXIST, UNACCP_PARAS
+from core.err_code import USER_ALREADY_EXIST, UNACCP_PARAS, USER_NOT_EXIST
 from models.Account import *
 from models.Common import DEFAULT_ACCOUNT
+from utils.commonUtil import b64_decode
 
 AUTHKEY_TIMEOUT = 24 * 30 * 60
 
@@ -81,7 +82,7 @@ def add_user(db, arg):
 	user = Account(db)
 
 	user.name = arg["paras"].get("account")
-	user.password = arg["paras"].get("password")
+	user.password = b64_decode(arg["paras"].get("password"))
 
 	if (not user.name or not user.password):
 		ERROR("not username or password specified")
@@ -113,7 +114,7 @@ def reset_password(db, arg):
 		ERROR("user %s not exist" % (arg["paras"].get("id")))
 		return USER_NOT_EXIST
 
-	return user.resetPassword(arg["paras"].get("password"))
+	return user.resetPassword(b64_decode(arg["paras"].get("password")))
 
 
 def update_user(db, arg):
@@ -129,13 +130,14 @@ def update_user(db, arg):
 	return user.update()
 
 def change_password(db, arg):
+	
 	user = getUser(db, userId=arg["paras"].get("id"))
 	if (not user):
 		ERROR("user %s not exist" % (arg["paras"].get("id")))
 		return USER_NOT_EXIST
 
-	return user.changePassword(arg["paras"].get('oldPassword'),
-	                           arg["paras"].get('newPassword'))
+	return user.changePassword(b64_decode(arg["paras"].get('oldPassword')),
+	                           b64_decode(arg["paras"].get('newPassword')))
 
 
 def getUserByName(db, name):

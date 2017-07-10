@@ -64,8 +64,9 @@ class Application(tornado.web.Application):
 		handlers = [
 			(r"/", MainHandler),
 			(r"/login/", LoginHandler),
-			(r"/ui/(.*)/", MainHandler),
-			(r"/ui/(.*)/(.*)/", MainHandler),
+			(r"/logout/", LogoutHandler),
+			(r"/app/(.*)", AppHandler),
+			(r"/app/(.*)/(.*)", AppDirHandler),
 			(r"/api/", ApiHandler),
 			(r"/api/test/", ApiTestHandler),
 			(r"/files/upload/", FileUploadHandler),
@@ -74,11 +75,21 @@ class Application(tornado.web.Application):
 		settings = dict(
 			cookie_secret="61oETzKXQAGaYdkL5gEmGeJJFuYh7EQnp2XdTP1o/Vo=",
 			template_path=os.path.join(os.path.dirname(__file__), "templates"),
-			static_path=os.path.join(os.path.dirname(__file__), "ng/static"),
+			static_path=os.path.join(os.path.dirname(__file__), "ng"),
 			xsrf_cookies=False,
 		)
 		tornado.web.Application.__init__(self, handlers, **settings)
 
+
+class LogoutHandler(tornado.web.RequestHandler):
+	@tornado.web.asynchronous
+	@tornado.gen.coroutine
+	def get(self):
+		cookie = self.get_cookie("usercookie", "")
+		if cookie:
+			pass
+		self.clear_cookie("usercookie")
+		self.redirect("/login/")
 
 class LoginHandler(tornado.web.RequestHandler):
 	@tornado.web.asynchronous
@@ -95,12 +106,9 @@ class LoginHandler(tornado.web.RequestHandler):
 	@tornado.gen.coroutine
 	def post(self):
 		
-		# Step 1, Login with default account
-		logintype = self.get_argument("logintype")
 		argObj = getArgObj(self.request)
 		paras = {
-			"account": self.get_argument("accountname"),
-			"name": self.get_argument("username"),
+			"account": self.get_argument("username"),
 			"password": self.get_argument("password"),
 			"role": 7,
 			"accountId": DEFAULT_ACCOUNT_ID
@@ -124,6 +132,23 @@ class LoginHandler(tornado.web.RequestHandler):
 			self.set_cookie("username", retObj["RetObj"]["name"])
 			self.set_cookie("userid", retObj["RetObj"]["id"])
 			self.redirect("/")
+
+class AppHandler(tornado.web.RequestHandler):
+	def get(self, filepath=None):
+		query = self.request.query
+		if (query):
+			self.redirect("/static/app/%s?%s" % (filepath, query))
+		else:
+			self.redirect("/static/app/%s" % filepath)
+
+
+class AppDirHandler(tornado.web.RequestHandler):
+	def get(self, subpath=None, filepath=None):
+		query = self.request.query
+		if (query):
+			self.redirect("/static/app/%s/%s?%s" % (subpath, filepath, query))
+		else:
+			self.redirect("/static/app/%s/%s" % (subpath, filepath))
 
 
 class MainHandler(tornado.web.RequestHandler):

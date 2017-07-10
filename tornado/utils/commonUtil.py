@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-
+import base64
 import json
 import os
 import socket
@@ -22,6 +22,7 @@ PLATFORM_DEBIAN = "debian7"
 PLATFORM_REDCENT6 = "redcent6"
 PLATFORM_REDCENT7 = "redcent7"
 
+
 # generate random str which len is randomlength.
 def random_str(randomlength=8):
 	str = ''
@@ -29,8 +30,8 @@ def random_str(randomlength=8):
 	length = len(chars) - 1
 	random = Random()
 	for i in range(randomlength):
-		str+=chars[random.randint(0, length)]
-
+		str += chars[random.randint(0, length)]
+	
 	return str
 
 
@@ -39,13 +40,12 @@ def CRC32(crcStr):
 
 
 def listFiles(fileDir, keyword=None):
-
 	fileList = []
-
+	
 	for file in os.listdir(fileDir):
 		if (not os.path.isdir(file) and (not keyword or file.find(keyword) != -1)):
 			fileList.append(file)
-
+	
 	return fileList
 
 
@@ -60,12 +60,12 @@ def getPlatform():
 		filePath = CENTOS_VERSION_FILE
 	else:
 		filePath = REDHAT_VERSION_FILE
-
+	
 	fd = open(filePath, "r")
 	line = fd.readline()
 	version = line.split(".")[0].split(" ")[-1]
 	fd.close()
-
+	
 	return "readcent" + version
 
 
@@ -81,7 +81,7 @@ def ip2long(ip):
 def removeFile(filepath):
 	if (filepath == None or os.path.exists(filepath) == False):
 		return
-
+	
 	os.remove(filepath)
 
 
@@ -99,6 +99,7 @@ def buildRetObj(errorCode, data=None, errorLog=""):
 		"ErrorLog": errorLog
 	}
 
+
 def toString(src, encoding="utf-8"):
 	if (type(src) == str):
 		try:
@@ -112,37 +113,38 @@ def toString(src, encoding="utf-8"):
 def transToObj(string):
 	if (string == None):
 		return None
-
+	
 	if (type(string) != type("a") and type(string) != type('a')):
 		string = string.encode()
-
+	
 	if (len(string) < 2):
 		return None
-
+	
 	try:
 		obj = json.loads(string, encoding="utf-8")
 	except:
-		obj = { }
-
+		obj = {}
+	
 	return obj
 
 
 def tryToDump(string):
 	if (string == None):
-		return { }
-
+		return {}
+	
 	if (type(string) != type("a")):
 		string = string.encode()
-
+	
 	if (len(string) < 2):
-		return { }
-
+		return {}
+	
 	try:
 		obj = json.loads(string)
 	except:
 		obj = string
-
+	
 	return json.dumps(obj, sort_keys=True, indent=4)
+
 
 def getStrTime(milisecs):
 	return time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(int(milisecs) / 1000))
@@ -174,61 +176,61 @@ def transToStr(obj, indent=False):
 def oct_trim(inStr):
 	segs = inStr.split(" ")
 	result = ""
-
+	
 	for seg in segs:
 		if (seg == ''):
 			continue
 		result += seg
 		result += " "
-
+	
 	return result.rstrip()
 
 
 def OCT_SYSTEM(formatStr, arg=None):
 	TEMPFILE_NAME = "/tmp/OCTTEMP_FILE_%ld%s" % (get_current_time(), getUuid())
-
+	
 	if (arg):
 		CMD = formatStr % arg
 	else:
 		CMD = formatStr
-
+	
 	CMD += " > %s" % (TEMPFILE_NAME)
 	ret = os.system(CMD)
-
+	
 	fp = open(TEMPFILE_NAME, 'r')
 	if (fp == None):
 		return (ret >> 8 & 0XFF, None)
-
+	
 	data = fp.read()
 	fp.close()
 	os.remove(TEMPFILE_NAME)
-
+	
 	if (len(data) == 0):
 		return (ret >> 8 & 0XFF, None)
-
+	
 	if (data[-1] == '\n'):
 		data = data[:-1]  # to remove last "\n"
-
+	
 	if (len(data) == 0):
 		data = None
-
+	
 	return (ret >> 8 & 0XFF, data)
 
 
 def OCT_PIPERUN(cmd):
 	import subprocess
-
+	
 	if (cmd == None):
 		return (0, None)
-
+	
 	args = cmd.split()
 	p = subprocess.Popen(args, close_fds=True, stdout=subprocess.PIPE,
 	                     stderr=subprocess.PIPE, shell=False)
 	p.wait()
-
+	
 	ret = p.returncode
 	msg = p.stdout.read()
-
+	
 	return (ret, msg)
 
 
@@ -238,6 +240,7 @@ def getUuid(spilt=None):
 	else:
 		x = uuid.uuid4().hex
 		return x
+
 
 def allocVmMac(vmId, nicId):
 	m = MD5()
@@ -275,12 +278,12 @@ def jsonStringFormat(objString):
 	else:
 		obj = objString
 		toString = transToStr(objString)
-
+	
 	try:
 		result = json.dumps(obj, sort_keys=True, indent=2)
 	except:
 		result = toString
-
+	
 	return result
 
 
@@ -298,16 +301,16 @@ def fileToObj(filePath):
 	if (not os.path.exists(filePath)):
 		print(("file %s not exist" % (filePath)))
 		return None
-
+	
 	fd = open(filePath, "r", encoding="utf-8")
 	if (not fd):
 		print(("open file %s error" % (filePath)))
 		return None
-
+	
 	obj = transToObj(fd.read())
-
+	
 	fd.close()
-
+	
 	return obj
 
 
@@ -322,33 +325,33 @@ def getErrorMsg(error):
 def isValidJson(string):
 	if (string == None):
 		return False
-
+	
 	try:
 		eval(string)
 	except Exception as e:
 		return False
-
+	
 	return True
 
 
 def format_path_net(path):
 	flag = 0
-
+	
 	if path == None:
 		return None
-
+	
 	path = path.replace(' ', '')
-
+	
 	path_temp = path.split(':')
-
+	
 	path_t = '/' + path_temp[1] + '/'
-
+	
 	path = path_temp[0] + ':' + path_t
-
+	
 	path_str = ''
-
+	
 	for s_temp in path:
-
+		
 		if flag == 1 and s_temp == '/':
 			continue
 		if s_temp == '/':
@@ -356,13 +359,26 @@ def format_path_net(path):
 		else:
 			flag = 0
 		path_str = path_str + s_temp
-
+	
 	return path_str
 
+
 def get_pid_by_process_name(name):
-	cmd = 'ps -ae | grep -w %s' %name
+	cmd = 'ps -ae | grep -w %s' % name
 	ret, data = OCT_SYSTEM(cmd)
 	if ret != 0:
 		return None
-
+	
 	return data.split()[0]
+
+
+def b64_decode(src):
+	if not src:
+		return ""
+	return base64.b64decode(src.encode()).decode()
+
+
+def b64_encode(src):
+	if not src:
+		return ""
+	return base64.b64encode(src.encode()).decode()

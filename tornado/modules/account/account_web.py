@@ -3,7 +3,7 @@
 
 from core.err_code import OCT_SUCCESS, USER_PASSWD_ERR, DB_ERR, USER_NOT_EXIST
 from modules.account import account as userService
-from utils.commonUtil import buildRetObj
+from utils.commonUtil import buildRetObj, b64_decode
 from utils.sessionUtil import newSession, removeSession
 
 
@@ -38,11 +38,11 @@ def web_login(db, env, arg):
     if (not user):
         return buildRetObj(USER_NOT_EXIST, None)
 
-    ret = user.auth(paras.get("password"))
+    ret = user.auth(b64_decode(paras.get("password")))
     if ret == 0:
         data = {
-            'id': user.myId,
-            'name': user.name,
+            "id": user.myId,
+            "name": user.name,
             "role": user.role
         }
         sessionObj = newSession(db, data)
