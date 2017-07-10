@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-API_PREFIX = "octlink.wcrobot.v1"
+API_PREFIX = "octlink.tundra.v1"
 PARAM_NOT_NULL = "NotNull"
 
 PARAM_TYPE_STRING = "string"

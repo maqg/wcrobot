@@ -7,7 +7,7 @@ import sys
 import traceback
 
 from core import dbmysql
-from core.err_code import NO_AUTH_SKEY, UNACCP_PARAS, SYSCALL_ERR
+from core.err_code import NO_AUTH_SKEY, UNACCP_PARAS, SYSCALL_ERR, OCT_SUCCESS
 from core.log import ERROR, DEBUG, INFO
 from models.Common import DEFAULT_ACCOUNT_ID
 from utils.commonUtil import getUuid, isSystemWindows
@@ -63,7 +63,7 @@ class Application(tornado.web.Application):
 	def __init__(self):
 		handlers = [
 			(r"/", MainHandler),
-			(r"/ui/", MainHandler),
+			(r"/login/", LoginHandler),
 			(r"/ui/(.*)/", MainHandler),
 			(r"/ui/(.*)/(.*)/", MainHandler),
 			(r"/api/", ApiHandler),
@@ -80,15 +80,73 @@ class Application(tornado.web.Application):
 		tornado.web.Application.__init__(self, handlers, **settings)
 
 
+class LoginHandler(tornado.web.RequestHandler):
+	@tornado.web.asynchronous
+	@tornado.gen.coroutine
+	def get(self):
+		error = self.get_argument("error", "")
+		if error:
+			prompt = "用户名不在，或密码不匹配！"
+		else:
+			prompt = ""
+		self.render("login.html", ACTION="error", PROMPT=prompt)
+	
+	@tornado.web.asynchronous
+	@tornado.gen.coroutine
+	def post(self):
+		
+		# Step 1, Login with default account
+		logintype = self.get_argument("logintype")
+		argObj = getArgObj(self.request)
+		paras = {
+			"account": self.get_argument("accountname"),
+			"name": self.get_argument("username"),
+			"password": self.get_argument("password"),
+			"role": 7,
+			"accountId": DEFAULT_ACCOUNT_ID
+		}
+		argObj["api"] = "octlink.tundra.v1.account.APILoginByAccount"
+		
+		argObj["paras"] = paras
+		
+		self.db = dbmysql.mysqldb()
+		session = getSession(self.db, sessionId="00000000000000000000000000000000")
+		del self.db
+		
+		argObj["session"] = session
+		retObj = doDispatching(argObj, session, API_PROTOS)
+		if retObj["RetCode"] != OCT_SUCCESS:
+			ERROR("login error %s" % str(retObj))
+			self.redirect("/login/?error=true")
+		else:
+			sessionObj = retObj["RetObj"]["session"]
+			self.set_cookie("usercookie", sessionObj["id"])
+			self.set_cookie("username", retObj["RetObj"]["name"])
+			self.set_cookie("userid", retObj["RetObj"]["id"])
+			self.redirect("/")
+
+
 class MainHandler(tornado.web.RequestHandler):
 	@tornado.web.asynchronous
 	@tornado.gen.coroutine
-	def get(self, module="index", action=None):
-		templatePath = getTemplate(module)
-		if (not templatePath):
-			self.render(TEMPLATE_NOT_FOUND)
-		else:
-			self.render(templatePath)
+	def get(self):
+		
+		cookie = self.get_cookie("usercookie", "")
+		username = self.get_cookie("username", "")
+		userid = self.get_cookie("userid", "")
+		
+		if not cookie:
+			self.redirect("/login/")
+			return
+		
+		self.db = dbmysql.mysqldb()
+		session = getSession(self.db, sessionId=cookie)
+		del self.db
+		if not session:
+			self.redirect("/login/")
+			return
+		
+		self.render("index.html")
 
 
 class ApiTestHandler(tornado.web.RequestHandler):
@@ -99,27 +157,27 @@ class ApiTestHandler(tornado.web.RequestHandler):
 		"reply": "{}",
 		"paras": "{}"
 	}
-
+	
 	@tornado.web.asynchronous
 	def get(self):
-
+		
 		self.render("testapi.html", moduleList=API_VIEW_LIST,
 		            moduleListStr=json.dumps(API_VIEW_LIST, indent=4),
 		            result=self.result,
 		            resultStr=json.dumps(self.result, indent=4, ensure_ascii=False))
-
+	
 	@tornado.web.asynchronous
 	@tornado.gen.coroutine
 	def post(self, *args, **kwargs):
-
+		
 		argObj = getArgObj(self.request)
 		api = argObj["api"]
 		paras = argObj["paras"]
 		async = False
-
+		
 		if paras["timeout"] != 0:
 			async = True
-
+		
 		api_body = {
 			"api": api,
 			"paras": paras,
@@ -128,22 +186,22 @@ class ApiTestHandler(tornado.web.RequestHandler):
 				"uuid": "00000000000000000000000000000000"
 			}
 		}
-
+		
 		self.result["paras"] = argObj["paras"]
 		self.result["moduleSelected"] = argObj["module"]
 		self.result["apiSelected"] = argObj["api"]
 		self.result["request"] = json.dumps(argObj, indent=4, ensure_ascii=False)
-
+		
 		client = tornado.httpclient.AsyncHTTPClient()
-
+		
 		url = "http://%s:%d/api/" % ("127.0.0.1", RUNNING_PORT)
 		ERROR("%sfff" % url)
 		response = yield client.fetch(url, method="POST", request_timeout=10, connect_timeout=10,
 		                              body=json.dumps(api_body))
 		self.on_response(response)
-
+	
 	def on_response(self, resp):
-
+		
 		body = json.loads(str(resp.body, encoding="utf-8"))
 		if body == None:
 			result = buildFailureReply(SYSCALL_ERR)
@@ -152,7 +210,7 @@ class ApiTestHandler(tornado.web.RequestHandler):
 		else:
 			self.result["reply"] = json.dumps(body, indent=4, ensure_ascii=False)
 			self.write(body)
-
+		
 		self.redirect("/api/test/")
 
 
@@ -174,43 +232,43 @@ class FileUploadHandler(tornado.web.RequestHandler):
 	@tornado.web.asynchronous
 	@tornado.gen.coroutine
 	def post(self):
-
+		
 		self.db = dbmysql.mysqldb()
-
+		
 		if isSystemWindows():
 			filePath = "var/tmp/" + getUuid()
 		else:
 			filePath = "/tmp/" + getUuid()
-
+		
 		# get the request file to cache path
 		try:
 			file_metas = self.request.files['file']
 		except:
 			file_metas = self.request.files['filename']
-
+		
 		for meta in file_metas:
 			with open(filePath, 'wb') as up:
 				up.write(meta['body'])
-
+		
 		argObj = appendBaseArg({}, self.request)
 		argObj["paras"]["role"] = 7
 		argObj["paras"]["accountId"] = DEFAULT_ACCOUNT_ID
-
+		
 		api_key = self.get_argument("api", None)
 		if (not api_key):
 			self.write(buildFailureReply(UNACCP_PARAS, errorMsg="api key error"))
 			self.finish()
 			return
-
+		
 		argObj["paras"]["filePath"] = filePath
 		argObj["api"] = UPLOAD_API_MAP.get(api_key)
 		if (not argObj["api"]):
 			self.write(buildFailureReply(UNACCP_PARAS, errorMsg=api_key))
 			self.finish()
 			return
-
+		
 		session = getSession(self.db, sessionId="00000000000000000000000000000000")
-
+		
 		argObj["session"] = session
 		retObj = doDispatching(argObj, session, API_PROTOS)
 		self.write(buildReply(retObj))
@@ -219,71 +277,71 @@ class FileUploadHandler(tornado.web.RequestHandler):
 
 class ApiHandler(tornado.web.RequestHandler):
 	SUPPORTED_METHODS = ("POST")
-
+	
 	db = None
-
+	
 	def __init__(self, application, request, **kwargs):
 		super(ApiHandler, self).__init__(application, request, **kwargs)
-
+		
 		self.db = dbmysql.mysqldb()
-
+	
 	def checkSession(self, argObj):
 		apiName = argObj.get("api")
-
+		
 		if (apiName.split(".")[-1] in IGNORE_SESSION_APIS):
 			DEBUG("User login API, no need check session")
 			return (True, {})
-
+		
 		sessionId = getSessionId(argObj)
 		if (not sessionId):
 			return (False, {})
-
+		
 		DEBUG("got session id %s" % sessionId)
-
+		
 		sessionObj = getSession(self.db, sessionId)
 		if not sessionObj:
 			return (False, {})
-
+		
 		return (True, sessionObj)
-
+	
 	def getAccountInfo(self, session):
-
+		
 		if session.get("cookie"):
 			role = session["cookie"]["role"] or 7
 			accountId = session["cookie"]["id"] or DEFAULT_ACCOUNT_ID
 		else:
 			role = 7
 			accountId = DEFAULT_ACCOUNT_ID
-
+		
 		return role, accountId
-
+	
 	@tornado.web.asynchronous
 	def post(self, *args, **kwargs):
 		argObj = getArgObj(self.request)
-
+		
 		# import time
 		# yield tornado.gen.Task(tornado.ioloop.IOLoop.instance().add_timeout, time.time() + 10)
-
+		
 		if (not argObj.get("api")):
 			ERROR("not a valid api, no api exist")
 			self.write(buildFailureReply(UNACCP_PARAS))
 			self.finish()
 			return
-
+		
 		(status, session) = self.checkSession(argObj)
 		if (not status):
 			ERROR("check session failed %s " % str(argObj))
 			self.write(buildFailureReply(NO_AUTH_SKEY))
 			self.finish()
 			return
-
+		
 		(role, accountId) = self.getAccountInfo(session)
 		argObj["paras"]["role"] = role
-
+		
 		# IF accountId Specified, just use it
 		if not argObj["paras"].get("accountId"):
 			argObj["paras"]["accountId"] = accountId
-
+		
 		retObj = doDispatching(argObj, session, API_PROTOS)
 		self.write(buildReply(retObj))
 		self.finish()
@@ -301,10 +359,10 @@ def loadFunction(apiProto):
 	if (not serviceName):
 		apiProto["func"] = None
 		return True
-
+	
 	funcName = serviceName.split(".")[-1]
 	modulePath = serviceName.split(".")[:-1]
-
+	
 	try:
 		service = __import__("modules." + ".".join(modulePath), fromlist=["from modules import"])
 	except Exception as e:
@@ -312,7 +370,7 @@ def loadFunction(apiProto):
 		print(('Import module failed. [%s]' % e))
 		print(('Import module failed. [%s]' % traceback.format_exc()))
 		return False
-
+	
 	if hasattr(service, funcName):
 		funcObj = getattr(service, funcName)
 		apiProto["func"] = funcObj
@@ -320,13 +378,13 @@ def loadFunction(apiProto):
 		print(('There is no %s in %s' % (funcName, modulePath)))
 		del service
 		return False
-
+	
 	return True
 
 
 def loadAPIs():
 	global API_PROTOS
-
+	
 	for moduleName in API_MODULE_LIST:
 		module = __import__("views.api.center.api_" + moduleName, fromlist=["from views import"])
 		for (k, v) in list(module.funcList.items()):
@@ -335,25 +393,25 @@ def loadAPIs():
 				print("load function error")
 				return False
 			API_PROTOS[key] = v
-
+	
 	print("Loaded all APIs OK!")
-
+	
 	return True
 
 
 def loadViewAPIs():
 	def copy_paras(paras):
-
+		
 		copyed_paras = {}
 		for (k, v) in list(paras.items()):
 			copyed_paras[k] = v
-
+		
 		append_extra_paras(copyed_paras)
-
+		
 		return copyed_paras
-
+	
 	def append_extra_paras(paras):
-
+		
 		if (not paras.get("paras")):
 			paras["timeout"] = {
 				"default": 0,
@@ -361,13 +419,13 @@ def loadViewAPIs():
 				"desc": "Timeout Value",
 				"descCN": "超时时间，0表示同步调用",
 			}
-
+	
 	global API_VIEW_LIST
-
+	
 	for moduleName in API_MODULE_LIST:
-
+		
 		API_VIEW_LIST[moduleName] = []
-
+		
 		module = __import__("views.api.center.api_" + moduleName, fromlist=["from views import"])
 		for (k, v) in list(module.funcList.items()):
 			key = API_PREFIX + "." + moduleName + "." + k
@@ -377,16 +435,16 @@ def loadViewAPIs():
 				"paras": copy_paras(v.get("paras") or {})
 			}
 			API_VIEW_LIST[moduleName].append(apiProto)
-
+	
 	print("Loaded all APIs OK!")
 
 
 def init():
 	if (not loadAPIs()):
 		return False
-
+	
 	loadViewAPIs()
-
+	
 	return True
 
 
@@ -395,28 +453,28 @@ def init():
 
 
 if __name__ == "__main__":
-
+	
 	if (float(tornado.version.split(".")[0]) < 3.0):
 		print(("Version of tornado [%s] is too low, we need 3.0 above" % (tornado.version)))
 		sys.exit(1)
-
+	
 	if (not init()):
 		print("init Center API Engine Failed")
 		exit(1)
-
+	
 	if (len(sys.argv) != 3):
 		addr = LISTEN_ADDR
 		port = LISTEN_PORT
 	else:
 		addr = sys.argv[1]
 		port = int(sys.argv[2])
-
+	
 	global RUNNING_PORT
-
+	
 	RUNNING_PORT = port
-
+	
 	print("To start to run webServer in %s:%d" % (addr, port))
-
+	
 	INFO("To start to run webServer in %s:%d" % (addr, port))
-
+	
 	runWebServer(addr, port)
