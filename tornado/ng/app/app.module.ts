@@ -8,6 +8,7 @@ import { BrowserModule } from '@angular/platform-browser'
 import {AccountsComponent} from "./account/accounts.component";
 import {AccountDetailComponent} from "./account/account-detail.component";
 import {AccountQuotaComponent} from "./account/quota.component";
+import {HashLocationStrategy, LocationStrategy} from "@angular/common";
 
 @NgModule({
     imports: [
@@ -25,7 +26,8 @@ import {AccountQuotaComponent} from "./account/quota.component";
     ],
 
     providers: [
-        AccountService
+        AccountService,
+        { provide: LocationStrategy, useClass: HashLocationStrategy }
     ],
 
     bootstrap: [

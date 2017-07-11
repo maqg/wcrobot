@@ -11,23 +11,23 @@ const routes:Routes = [
     {path: 'dashboard', component: DashboardComponent},
     {path: 'accounts', component: AccountsComponent},
 
+        {path: "accounts", component: AccountsComponent},
+    {path: "accounts/:id", component: AccountDetailComponent},
+    {path: "accountquota/:id", component: AccountQuotaComponent},
+
 ];*/
 
 const routes:Routes = [
-    {path: "", component: DashboardComponent},
-    {path: "dashboard", component: DashboardComponent},
-    {path: "accounts", component: AccountsComponent},
-    {path: "accounts/:id", component: AccountDetailComponent},
-    {path: "accountquota/:id", component: AccountQuotaComponent},
-    // { path: 'login', component: LoginComponent },
+    { path: "", redirectTo: "/dashboard", pathMatch: "full" },
+    { path: "dashboard", component: DashboardComponent },
     {
-        path: 'home', component: DashboardComponent,
+        path: "accounts",
         children: [
-            {path: '', redirectTo: '/home/user', pathMatch: 'full'},
-            {path: 'accounts', component: AccountsComponent},
+            { path: "", component: AccountsComponent },
+            { path: ":id", component: AccountDetailComponent },
+            { path: ":id/quota", component: AccountQuotaComponent },
         ]
-    },
-    {path: "**", component: AccountsComponent}
+    }
 ];
 
 

@@ -27,7 +27,8 @@ export class AccountsComponent implements OnInit {
     }
 
     gotoEditQuota(account: Account): void {
-        this.router.navigate(["/accountquota", account.id])
+        let url = "/accounts/" + account.id + "/quota";
+        this.router.navigate([url]);
     }
 
 }
