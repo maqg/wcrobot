@@ -4,22 +4,12 @@ import { RouterModule, Routes } from '@angular/router';
 import {AccountsComponent} from "./account/accounts.component";
 import {AccountDetailComponent} from "./account/account-detail.component";
 import {AccountQuotaComponent} from "./account/quota.component";
-
-/*
-const routes:Routes = [
-    {path: '', redirectTo: '/dashboard', pathMatch: 'full'},
-    {path: 'dashboard', component: DashboardComponent},
-    {path: 'accounts', component: AccountsComponent},
-
-        {path: "accounts", component: AccountsComponent},
-    {path: "accounts/:id", component: AccountDetailComponent},
-    {path: "accountquota/:id", component: AccountQuotaComponent},
-
-];*/
+import {AlterComponent} from "./alter/alter.component";
 
 const routes:Routes = [
     { path: "", redirectTo: "/dashboard", pathMatch: "full" },
     { path: "dashboard", component: DashboardComponent },
+    { path: "alter", component: AlterComponent },
     {
         path: "accounts",
         children: [
