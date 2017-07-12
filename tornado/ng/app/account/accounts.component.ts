@@ -1,6 +1,7 @@
 import {Component, OnInit} from "@angular/core";
 import {AccountService} from "../service/account.service";
 import {Router} from "@angular/router";
+import {AlarmService} from "../service/alarm.service";
 
 @Component({
     selector: 'my-accounts',
@@ -12,7 +13,7 @@ export class AccountsComponent implements OnInit {
     accounts: Account[] = [];
 
     constructor(private accountService: AccountService,
-                private router: Router) {
+                private router: Router, private alarmService: AlarmService) {
     }
 
     ngOnInit(): void {
@@ -20,6 +21,10 @@ export class AccountsComponent implements OnInit {
     }
 
     delete(account: Account): void {
+    }
+
+    alarm(account: Account) {
+        this.alarmService.showMsg("alarm", account.name);
     }
 
     gotoDetail(account: Account): void {

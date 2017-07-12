@@ -10,6 +10,7 @@ import {AccountDetailComponent} from "./account/account-detail.component";
 import {AccountQuotaComponent} from "./account/quota.component";
 import {HashLocationStrategy, LocationStrategy} from "@angular/common";
 import {AlterComponent} from "./alter/alter.component";
+import {AlarmService} from "./service/alarm.service";
 
 @NgModule({
     imports: [
@@ -29,6 +30,7 @@ import {AlterComponent} from "./alter/alter.component";
 
     providers: [
         AccountService,
+        AlarmService,
         { provide: LocationStrategy, useClass: HashLocationStrategy }
     ],
 

@@ -15,7 +15,7 @@
     </tr>
     <tr *ngFor="let account of accounts">
         <td>{{ account.name }} <a (click)="gotoEditQuota(account)">配额</a></td>
-        <td>{{ account.state }}</td>
+        <td>{{ account.state }}<a (click)="alarm(account)">alarm</a></td>
         <td>{{ account.email }}</td>
         <td>{{ account.phoneNumber }}</td>
         <td>{{ account.id }}</td>
