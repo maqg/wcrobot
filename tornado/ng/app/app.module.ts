@@ -9,6 +9,7 @@ import {AccountsComponent} from "./account/accounts.component";
 import {AccountDetailComponent} from "./account/account-detail.component";
 import {AccountQuotaComponent} from "./account/quota.component";
 import {HashLocationStrategy, LocationStrategy} from "@angular/common";
+import {AlterComponent} from "./alter/alter.component";
 
 @NgModule({
     imports: [
@@ -22,7 +23,8 @@ import {HashLocationStrategy, LocationStrategy} from "@angular/common";
         DashboardComponent,
         AccountsComponent,
         AccountDetailComponent,
-        AccountQuotaComponent
+        AccountQuotaComponent,
+        AlterComponent
     ],
 
     providers: [
